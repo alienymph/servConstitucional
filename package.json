@@ -1,0 +1,24 @@
+{
+  "name": "pdf-uploader",
+  "version": "1.0.0",
+  "description": "Aplicación mínima para subir PDFs a MongoDB GridFS",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
+    "mongodb": "^5.0.0",
+    "mongoose": "^7.0.0",
+    "multer": "^1.4.5-lts.2",
+    "pdf-parse": "^2.4.5",
+    "pdfkit": "^0.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

@@ -1,0 +1,85 @@
+<%- include('partials/header') %>
+
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Crear nuevo PDF</h4>
+    <form action="/api/files/create" method="POST">
+      <div class="mb-3">
+        <label class="form-label">Titular</label>
+        <input type="text" name="titular" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Cargo</label>
+        <input type="text" name="cargo" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Correo</label>
+        <input type="email" name="correo" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Apoderado legal</label>
+        <input type="text" name="apoderado" class="form-control">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Enlace expediente</label>
+        <input type="url" name="expediente" class="form-control">
+      </div>
+
+      <div class="row mb-3">
+        <div class="col">
+          <label class="form-label">Vigencia inicio</label>
+          <input type="date" name="vigenciaInicio" class="form-control" required>
+        </div>
+        <div class="col">
+          <label class="form-label">Vigencia fin</label>
+          <input type="date" name="vigenciaFin" class="form-control" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Año</label>
+        <input type="number" name="anio" class="form-control" min="1900" max="2100" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Firma</label>
+        <input type="text" name="firma" class="form-control">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Nacionalidad</label>
+        <input type="text" name="nacionalidad" class="form-control">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Código</label>
+        <input type="text" name="codigo" class="form-control">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">RFC</label>
+        <input type="text" name="rfc" class="form-control">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Cuenta con INE</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="ine" value="Sí" required>
+          <label class="form-check-label">Sí</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="ine" value="No" required>
+          <label class="form-check-label">No</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Generar PDF</button>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
