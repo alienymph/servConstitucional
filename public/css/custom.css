@@ -1,4 +1,84 @@
 /* public/css/custom.css */
-body { background: #f8f9fa; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; }
-.container { max-width: 1100px; margin: 0 auto; }
-.card { border-radius: .6rem; }
+
+/* Variables globales */
+:root {
+  --bg-color: #f5f5f5;           /* gris muy suave de fondo */
+  --card-bg: #ffffff;            /* blanco para las cards */
+  --card-radius: 0.8rem;         /* esquinas un poco más redondeadas */
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* sombra más elegante y suave */
+  --font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --text-color: #1f1f1f;        /* negro suave, elegante */
+  --accent-color: #bfa18e;      /* color acento classy, beige/bronze */
+  --transition-speed: 0.3s;
+}
+
+/* Estilo del body */
+body {
+  background: var(--bg-color);
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Contenedor principal */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Cards */
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(0,0,0,0.05); /* borde sutil */
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+/* Hover efecto elegante en cards */
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Encabezados elegantes */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* Links sutiles con efecto classy */
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+  color: darken(var(--accent-color), 10%);
+  text-decoration: underline;
+}
+
+/* Botones minimalistas */
+button {
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 0.5rem;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+button:hover {
+  background-color: #a88b72; /* un poco más oscuro al hover */
+  transform: translateY(-2px);
+}
