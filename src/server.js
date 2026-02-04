@@ -10,65 +10,87 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 async function start() {
-  const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://esli1234567_db_user:eK7UtRigJYFUTC0y@cluster0.urccskn.mongodb.net/?appName=Cluster0';
+  const MONGO_URI = process.env.MONGO_URI ||
+    'mongodb+srv://BaseDeDatos:leprechaun12@cluster0.v591igu.mongodb.net/?appName=Cluster0';
+
   if (!MONGO_URI) {
-    console.error('MONGO_URI no definido en .env');
+    console.error('❌ MONGO_URI no definido');
     process.exit(1);
   }
 
-  // Conectar a MongoDB y preparar GridFS
+  // 🔌 MongoDB
   await connectDB(MONGO_URI);
 
-  // Parsers
+  // 📦 Parsers
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Servir archivos estáticos (public)
+  // 📁 Archivos estáticos
   app.use(express.static(path.join(__dirname, '..', 'public')));
 
-  // Helmet con CSP razonable para desarrollo
-  app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
-        styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
-        connectSrc: ["'self'"],
-        imgSrc: ["'self'", "data:"],
-        fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
-        objectSrc: ["'none'"]
+  // 🛡️ Helmet
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
+          styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+          imgSrc: ["'self'", "data:"],
+          fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
+          connectSrc: ["'self'"],
+          objectSrc: ["'none'"]
+        }
       }
-    }
-  }));
+    })
+  );
 
-  // Vistas
+  // 🖼️ Vistas
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'));
 
-  // Rutas API
+  // 🔌 API
   app.use('/api/files', filesRouter);
 
-  // Rutas UI
-  app.get('/', (req, res) => res.redirect('/upload'));
-  app.get('/upload', (req, res) => res.render('upload'));
-  app.get('/manage', (req, res) => res.render('manage'));
-app.get('/create', (req, res) => res.render('create'));
-app.get('/create', (req, res) => res.render('edit'));
-  // Catch-all al final
-  app.use((req, res) => res.status(404).send('Not Found'));
+  // ======================
+  // 🌐 RUTAS UI
+  // ======================
 
-  // Error handler
+  app.get('/', (req, res) =>
+    res.render('home', { title: 'Inicio' })
+  );
+
+  app.get('/upload', (req, res) =>
+    res.render('upload', { title: 'Subir PDF' })
+  );
+
+  app.get('/manage', (req, res) =>
+    res.render('manage', { title: 'Gestionar PDFs' })
+  );
+
+  app.get('/edit/:id', (req, res) =>
+    res.render('edit', { title: 'Editar PDF', id: req.params.id })
+  );
+
+  // ======================
+  // ❌ 404
+  // ======================
+  app.use((req, res) => {
+    res.status(404).render('404', { title: 'No encontrado' });
+  });
+
+  // 💥 Error handler
   app.use((err, req, res, next) => {
     console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).send('Internal Server Error');
   });
 
   app.listen(PORT, () => {
-    console.log(`Server listening on http://localhost:${PORT}`);
+    console.log(`✅ Server running on http://localhost:${PORT}`);
   });
 }
 
 start().catch(err => {
-  console.error('Fallo al iniciar la app:', err);
+  console.error('❌ Error al iniciar:', err);
   process.exit(1);
 });

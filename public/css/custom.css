@@ -1,32 +1,44 @@
-/* public/css/custom.css */
+/* public/css/custom.css - Cottagecore Olivo & Rosa */
 
-/* Variables globales */
 :root {
-  --bg-color: #f5f5f5;           /* gris muy suave de fondo */
-  --card-bg: #ffffff;            /* blanco para las cards */
-  --card-radius: 0.8rem;         /* esquinas un poco más redondeadas */
-  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* sombra más elegante y suave */
-  --font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --text-color: #1f1f1f;        /* negro suave, elegante */
-  --accent-color: #bfa18e;      /* color acento classy, beige/bronze */
-  --transition-speed: 0.3s;
+  --bg-color: #fcfaf6;        /* crema claro */
+  --card-bg: #ffffff;          /* blanco suave */
+  --card-radius: 1rem;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --font-family: 'Georgia', 'Times New Roman', serif;
+  --primary-color: #7a8450;    /* verde olivo */
+  --secondary-color: #f4c6c6;  /* rosa suave */
+  --btn-shadow: 0 2px 6px rgba(122, 132, 80, 0.3);
+  --hover-color: #a1b078;      /* verde más claro para hover */
+  --text-color: #4b3a2f;       /* marrón oscuro para texto */
 }
 
-/* Estilo del body */
+/* Body */
 body {
   background: var(--bg-color);
   font-family: var(--font-family);
+  color: var(--text-color);
   margin: 0;
   padding: 0;
-  color: var(--text-color);
-  line-height: 1.6;
 }
 
-/* Contenedor principal */
+/* Contenedor */
 .container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 1rem;
+}
+
+/* Navbar */
+.navbar {
+  background: var(--primary-color) !important;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+.navbar .nav-link,
+.navbar .navbar-brand {
+  color: #fff !important;
+  font-weight: 500;
 }
 
 /* Cards */
@@ -34,51 +46,82 @@ body {
   background-color: var(--card-bg);
   border-radius: var(--card-radius);
   box-shadow: var(--card-shadow);
-  padding: 1.2rem;
+  padding: 1.5rem;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(0,0,0,0.05); /* borde sutil */
-  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
-/* Hover efecto elegante en cards */
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-/* Encabezados elegantes */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text-color);
-  font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-}
-
-/* Links sutiles con efecto classy */
-a {
-  color: var(--accent-color);
-  text-decoration: none;
-  transition: color var(--transition-speed) ease;
-}
-
-a:hover {
-  color: darken(var(--accent-color), 10%);
-  text-decoration: underline;
-}
-
-/* Botones minimalistas */
-button {
-  background-color: var(--accent-color);
+/* Botones */
+.btn-primary {
+  background-color: var(--primary-color);
   border: none;
-  border-radius: 0.5rem;
   color: #fff;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+  font-weight: 500;
+  border-radius: 0.8rem;
+  box-shadow: var(--btn-shadow);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+.btn-primary:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-2px);
 }
 
-button:hover {
-  background-color: #a88b72; /* un poco más oscuro al hover */
+.btn-secondary {
+  background-color: var(--secondary-color);
+  border: none;
+  color: var(--text-color);
+  border-radius: 0.8rem;
+  box-shadow: var(--btn-shadow);
+}
+.btn-secondary:hover {
+  background-color: #f7d1d1;
   transform: translateY(-2px);
+}
+
+/* Inputs y selects */
+input.form-control,
+select.form-control {
+  border-radius: 0.6rem;
+  border: 1px solid #d9c9b6;
+  padding: 0.5rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+input.form-control:focus,
+select.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 8px rgba(122, 132, 80, 0.2);
+}
+
+/* Tables */
+.table {
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background-color: var(--card-bg);
+}
+.table thead {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+.table-hover tbody tr:hover {
+  background-color: #fef6f6;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  color: #555;
+}
+
+/* Animaciones suaves */
+.animate__fadeIn {
+  animation: fadeIn 0.5s ease forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

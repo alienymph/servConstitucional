@@ -1,42 +1,57 @@
-<%- include('partials/header') %>
+<%- include('partials/header', { title: 'Gestionar PDFs' }) %>
 
-<div class="card animate__animated animate__fadeIn">
-  <div class="card-body">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="mb-0">Gestionar PDFs</h4>
-      <div class="d-flex gap-2">
-        <input id="q" class="form-control form-control-sm" placeholder="Buscar por empresa, titular, correo, RFC o nombre de archivo" />
-        <button id="searchBtn" class="btn btn-sm btn-outline-primary">Buscar</button>
-        <a href="/upload" class="btn btn-sm btn-primary">Subir</a>
+<div class="container mt-4">
+
+  <div class="card animate__animated animate__fadeIn">
+    <div class="card-body">
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Gestionar PDFs</h4>
+
+        <div class="d-flex gap-2">
+          <input id="q" class="form-control form-control-sm"
+            placeholder="Buscar por empresa, titular, correo, RFC o nombre de archivo">
+          <button id="searchBtn" class="btn btn-sm btn-outline-primary">
+            Buscar
+          </button>
+          <a href="/upload" class="btn btn-sm btn-primary">Subir</a>
+        </div>
       </div>
-    </div>
 
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-       <th><a href="#" class="sort" data-field="titular">Titular <i class="bi bi-arrow-down-up"></i></a></th>
-      <th><a href="#" class="sort" data-field="cargo">Cargo <i class="bi bi-arrow-down-up"></i></a></th>
-      <th><a href="#" class="sort" data-field="correo">Correo <i class="bi bi-arrow-down-up"></i></a></th>
-      <th><a href="#" class="sort" data-field="createdAt">Fecha <i class="bi bi-arrow-down-up"></i></a></th>
-      
-      <th>Acciones</th>
-    </tr>
-        </thead>
-        <tbody id="tbody">
-          <tr><td colspan="6" class="text-center text-muted py-4">Cargando...</td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Titular</th>
+              <th>Cargo</th>
+              <th>Correo</th>
+              <th>Fecha</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr>
+              <td colspan="5" class="text-center text-muted py-4">
+                Cargando...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="d-flex justify-content-between align-items-center mt-2">
-      <small id="summary" class="text-muted"></small>
-      <nav><ul class="pagination pagination-sm mb-0" id="pagination"></ul></nav>
+      <div class="d-flex justify-content-between align-items-center mt-2">
+        <small id="summary" class="text-muted"></small>
+        <ul class="pagination pagination-sm mb-0" id="pagination"></ul>
+      </div>
+
     </div>
   </div>
+
 </div>
 
-<div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index:1080"></div>
+<div id="toastContainer"
+  class="position-fixed bottom-0 end-0 p-3"
+  style="z-index:1080"></div>
 
 <script src="/js/manage.js"></script>
 

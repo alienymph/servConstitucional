@@ -1,0 +1,41 @@
+<%- include('partials/header', { title: 'Inicio' }) %>
+
+<div class="container mt-4">
+
+  <h2>Bienvenido al sistema de gestión de convenios</h2>
+
+  <p class="text-muted mt-2">
+    Desde aquí puedes subir, buscar y dar seguimiento a los convenios en formato PDF.
+  </p>
+
+  <div class="row mt-4 g-3">
+
+    <div class="col-md-4">
+      <div class="card p-3 h-100">
+        <h5>📤 Subir convenios</h5>
+        <p>Carga nuevos archivos PDF al sistema.</p>
+        <a href="/upload" class="btn btn-primary btn-sm">Ir</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-3 h-100">
+        <h5>🗂 Gestionar</h5>
+        <p>Consulta, edita o elimina convenios existentes.</p>
+        <a href="/manage" class="btn btn-primary btn-sm">Ir</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-3 h-100">
+        <h5>⏰ Próximos a vencer</h5>
+        <p>Visualiza convenios cercanos a su fecha límite.</p>
+        <a href="/expiring" class="btn btn-primary btn-sm">Ir</a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<%- include('partials/footer') %>
