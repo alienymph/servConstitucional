@@ -135,4 +135,57 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+/* ===========================
+   VER PDF (VISTA)
+=========================== */
+router.get('/view/:id', async (req, res) => {
+  try {
+    const file = await FileMeta.findById(req.params.id).lean();
+    if (!file) return res.status(404).send('Archivo no encontrado');
+
+    res.render('view', {
+      filename: file.filename,
+      gridId: file.gridFsId
+    });
+  } catch (err) {
+    console.error('[VIEW]', err);
+    res.status(500).send('Error al mostrar PDF');
+  }
+});
+
+/* ===========================
+   EDITAR PDF (VISTA)
+=========================== */
+/* ===========================
+   EDITAR PDF (VISTA)
+=========================== */
+router.get('/edit/:id', async (req, res) => {
+  try {
+    const meta = await FileMeta.findById(req.params.id).lean();
+    if (!meta) return res.status(404).send('Archivo no encontrado');
+
+    res.render('edit', { meta });
+  } catch (err) {
+    console.error('[EDIT]', err);
+    res.status(500).send('Error al cargar edición');
+  }
+});
+
+
+/* ===========================
+   GUARDAR CAMBIOS
+=========================== */
+/* ===========================
+   GUARDAR CAMBIOS
+=========================== */
+router.post('/edit/:id', async (req, res) => {
+  try {
+    await FileMeta.findByIdAndUpdate(req.params.id, req.body);
+    res.redirect('/manage');
+  } catch (err) {
+    console.error('[UPDATE]', err);
+    res.status(500).send('Error al guardar cambios');
+  }
+});
+
 module.exports = router;

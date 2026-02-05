@@ -1,18 +1,23 @@
-<%- include('partials/header') %>
+<%- include('partials/header', { title: filename }) %>
 
 <div class="card">
   <div class="card-body">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0"><%= filename %></h5>
+    <div class="d-flex justify-content-between mb-2">
+      <h5><%= filename %></h5>
       <div>
-        <a class="btn btn-sm btn-outline-secondary me-2" href="/api/files/download/<%= gridId %>" target="_blank" rel="noopener">Abrir en nueva pestaña</a>
-        <a class="btn btn-sm btn-primary" href="/api/files/download/<%= gridId %>" download>Descargar</a>
+        <a class="btn btn-sm btn-outline-secondary"
+           href="/api/files/download/<%= gridId %>"
+           target="_blank">Abrir</a>
+        <a class="btn btn-sm btn-primary"
+           href="/api/files/download/<%= gridId %>"
+           download>Descargar</a>
       </div>
     </div>
 
-    <div style="height: calc(100vh - 220px);">
-      <iframe src="/api/files/download/<%= gridId %>" style="width:100%; height:100%; border:0;" title="<%= filename %>"></iframe>
-    </div>
+    <iframe
+      src="/api/files/download/<%= gridId %>"
+      style="width:100%; height:80vh; border:0;">
+    </iframe>
   </div>
 </div>
 
