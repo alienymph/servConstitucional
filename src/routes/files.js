@@ -149,17 +149,20 @@ router.delete('/:id', async (req, res) => {
 router.get('/view/:id', async (req, res) => {
   try {
     const file = await FileMeta.findById(req.params.id).lean();
-    if (!file) return res.status(404).send('Archivo no encontrado');
+
+    if (!file) {
+      return res.status(404).send('Archivo no encontrado');
+    }
 
     res.render('view', {
-      filename: file.filename,
-      gridId: file.gridFsId
+      file
     });
   } catch (err) {
-    console.error('[VIEW]', err);
+    console.error('[VIEW ERROR]', err);
     res.status(500).send('Error al mostrar PDF');
   }
 });
+
 
 /* ===========================
    EDITAR PDF (VISTA)

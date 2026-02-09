@@ -1,23 +1,80 @@
-<%- include('partials/header', { title: filename }) %>
+<%- include('partials/header', { title: file.filename }) %>
 
-<div class="card">
-  <div class="card-body">
-    <div class="d-flex justify-content-between mb-2">
-      <h5><%= filename %></h5>
-      <div>
-        <a class="btn btn-sm btn-outline-secondary"
-           href="/api/files/download/<%= gridId %>"
-           >Abrir</a>
-        <a class="btn btn-sm btn-primary"
-           href="/api/files/download/<%= gridId %>"
-           download>Descargar</a>
+<div class="container mt-4">
+  <div class="row">
+
+    <!-- 📄 PDF -->
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0"><%= file.filename %></h5>
+            <div>
+              <a class="btn btn-sm btn-outline-secondary"
+                 href="/api/files/download/<%= file.gridFsId %>">
+                Abrir
+              </a>
+              <a class="btn btn-sm btn-primary"
+                 href="/api/files/download/<%= file.gridFsId %>"
+                 download>
+                Descargar
+              </a>
+            </div>
+          </div>
+
+          <iframe
+            src="/api/files/download/<%= file.gridFsId %>"
+            style="width:100%; height:75vh; border:0;">
+          </iframe>
+
+        </div>
       </div>
     </div>
 
-    <iframe
-      src="/api/files/download/<%= gridId %>"
-      style="width:100%; height:80vh; border:0;">
-    </iframe>
+    <!-- 🧾 METADATOS -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="mb-3">📌 Metadatos</h6>
+
+          <p><strong>Titular:</strong><br><%= file.titular || '—' %></p>
+          <p><strong>Cargo:</strong><br><%= file.cargo || '—' %></p>
+          <p><strong>Correo:</strong><br><%= file.correo || '—' %></p>
+          <p><strong>Apoderado:</strong><br><%= file.apoderado || '—' %></p>
+          <p><strong>Expediente:</strong><br>
+            <% if (file.expediente) { %>
+              <a href="<%= file.expediente %>" target="_blank">Ver enlace</a>
+            <% } else { %>
+              —
+            <% } %>
+          </p>
+
+          <hr>
+
+          <p><strong>Vigencia inicio:</strong><br>
+            <%= file.vigenciaInicio
+              ? new Date(file.vigenciaInicio).toLocaleDateString()
+              : '—' %>
+          </p>
+
+          <p><strong>Vigencia fin:</strong><br>
+            <%= file.vigenciaFin
+              ? new Date(file.vigenciaFin).toLocaleDateString()
+              : '—' %>
+          </p>
+
+          <p><strong>Año:</strong><br><%= file.anio || '—' %></p>
+          <p><strong>Código:</strong><br><%= file.codigo || '—' %></p>
+          <p><strong>RFC:</strong><br><%= file.rfc || '—' %></p>
+          <p><strong>INE:</strong><br><%= file.ine || '—' %></p>
+          <p><strong>Nacionalidad:</strong><br><%= file.nacionalidad || '—' %></p>
+          <p><strong>Firma:</strong><br><%= file.firma || '—' %></p>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
