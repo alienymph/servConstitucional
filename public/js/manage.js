@@ -54,7 +54,23 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${escapeHtml(it.titular || '')}</td>
         <td>${escapeHtml(it.cargo || '')}</td>
         <td>${escapeHtml(it.correo || '')}</td>
-        <td>${new Date(it.createdAt).toLocaleDateString()}</td>
+        <td>
+  ${new Date(it.createdAt).toLocaleDateString()}
+  <br>
+
+  ${
+    it.diffDays === null
+      ? '<span class="badge bg-secondary">Sin vigencia</span>'
+      : it.diffDays < 0
+        ? '<span class="badge bg-danger">Vencido</span>'
+        : it.diffDays <= 7
+          ? `<span class="badge bg-warning text-dark">
+              Vence en ${it.diffDays} días
+            </span>`
+          : '<span class="badge bg-success">Vigente</span>'
+  }
+</td>
+
         <td>
           <a class="btn btn-sm btn-success me-1"
              href="/api/files/view/${it._id}"

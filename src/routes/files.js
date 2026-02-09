@@ -89,11 +89,29 @@ router.get('/', async (req, res) => {
       ];
     }
 
-    const items = await FileMeta.find(filter)
-      .sort({ [sortBy]: order })
-      .lean();
+const items = await FileMeta.find(filter)
+  .sort({ [sortBy]: order })
+  .lean();
 
-    res.json({ ok: true, items });
+const today = new Date();
+
+const itemsWithExpiry = items.map(file => {
+  let diffDays = null;
+
+  if (file.vigenciaFin) {
+    diffDays = Math.ceil(
+      (new Date(file.vigenciaFin) - today) / (1000 * 60 * 60 * 24)
+    );
+  }
+
+  return {
+    ...file,
+    diffDays
+  };
+});
+
+res.json({ ok: true, items: itemsWithExpiry });
+
   } catch (err) {
     console.error('[LIST]', err);
     res.status(500).json({ ok: false, error: 'Error listando archivos' });
