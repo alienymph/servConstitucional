@@ -206,23 +206,41 @@ router.get('/edit/:id', async (req, res) => {
 =========================== */
 router.post('/edit/:id', async (req, res) => {
   try {
-    const data = {
-      ...req.body,
-      vigenciaInicio: req.body.vigenciaInicio
-        ? new Date(req.body.vigenciaInicio)
-        : null,
-      vigenciaFin: req.body.vigenciaFin
-        ? new Date(req.body.vigenciaFin)
-        : null
-    };
+    const updates = { ...req.body };
 
-    await FileMeta.findByIdAndUpdate(req.params.id, data);
+    // Fechas: solo actualizar si vienen
+    if (req.body.vigenciaInicio) {
+      updates.vigenciaInicio = new Date(req.body.vigenciaInicio);
+    } else {
+      delete updates.vigenciaInicio;
+    }
+
+    if (req.body.vigenciaFin) {
+      updates.vigenciaFin = new Date(req.body.vigenciaFin);
+    } else {
+      delete updates.vigenciaFin;
+    }
+
+    // Eliminar campos vacíos (""), evita sobrescritura
+    Object.keys(updates).forEach(key => {
+      if (updates[key] === '') {
+        delete updates[key];
+      }
+    });
+
+    await FileMeta.findByIdAndUpdate(
+      req.params.id,
+      { $set: updates },
+      { new: true }
+    );
+
     res.redirect('/manage');
   } catch (err) {
     console.error('[UPDATE]', err);
     res.status(500).send('Error al guardar cambios');
   }
 });
+
 
 
 

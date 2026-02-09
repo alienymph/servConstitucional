@@ -32,11 +32,23 @@
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">Vigencia inicio</label>
-          <input type="date" name="vigenciaInicio" class="form-control" value="<%= meta.vigenciaInicio || '' %>">
+          <input
+  type="date"
+  name="vigenciaInicio"
+  class="form-control"
+  value="<%= meta.vigenciaInicio ? meta.vigenciaInicio.toISOString().split('T')[0] : '' %>"
+>
+
         </div>
         <div class="col">
           <label class="form-label">Vigencia fin</label>
-          <input type="date" name="vigenciaFin" class="form-control" value="<%= meta.vigenciaFin || '' %>">
+          <input
+  type="date"
+  name="vigenciaFin"
+  class="form-control"
+  value="<%= meta.vigenciaFin ? meta.vigenciaFin.toISOString().split('T')[0] : '' %>"
+>
+
         </div>
       </div>
 
