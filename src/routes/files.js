@@ -41,13 +41,21 @@ router.post('/upload', upload.single('pdffile'), async (req, res) => {
       contentText = data.text;
     } catch (_) {}
 
-    const metaDoc = new FileMeta({
-      ...req.body,
-      filename: req.file.originalname,
-      contentType: req.file.mimetype,
-      gridFsId: fileDoc._id,
-      content: contentText
-    });
+const metaDoc = new FileMeta({
+  ...req.body,
+  vigenciaInicio: req.body.vigenciaInicio
+    ? new Date(req.body.vigenciaInicio)
+    : null,
+  vigenciaFin: req.body.vigenciaFin
+    ? new Date(req.body.vigenciaFin)
+    : null,
+
+  filename: req.file.originalname,
+  contentType: req.file.mimetype,
+  gridFsId: fileDoc._id,
+  content: contentText
+});
+
 
     await metaDoc.save();
 
