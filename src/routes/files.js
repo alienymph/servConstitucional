@@ -175,17 +175,28 @@ router.get('/edit/:id', async (req, res) => {
 /* ===========================
    GUARDAR CAMBIOS
 =========================== */
-/* ===========================
-   GUARDAR CAMBIOS
-=========================== */
 router.post('/edit/:id', async (req, res) => {
   try {
-    await FileMeta.findByIdAndUpdate(req.params.id, req.body);
+    const data = {
+      ...req.body,
+      vigenciaInicio: req.body.vigenciaInicio
+        ? new Date(req.body.vigenciaInicio)
+        : null,
+      vigenciaFin: req.body.vigenciaFin
+        ? new Date(req.body.vigenciaFin)
+        : null
+    };
+
+    await FileMeta.findByIdAndUpdate(req.params.id, data);
     res.redirect('/manage');
   } catch (err) {
     console.error('[UPDATE]', err);
     res.status(500).send('Error al guardar cambios');
   }
 });
+
+
+
+
 
 module.exports = router;

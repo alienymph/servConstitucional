@@ -68,6 +68,29 @@ async function start() {
     res.render('manage', { title: 'Gestionar PDFs' })
   );
 
+  const FileMeta = require('./models/FileMeta');
+
+app.get('/expiring', async (req, res) => {
+  try {
+    const today = new Date();
+    const limitDate = new Date();
+    limitDate.setDate(today.getDate() + 30);
+
+    const files = await FileMeta.find({
+      vigenciaFin: { $gte: today, $lte: limitDate }
+    }).sort({ vigenciaFin: 1 }).lean();
+
+    res.render('expiring', {
+      title: 'Documentos por vencer',
+      files
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al cargar documentos por vencer');
+  }
+});
+
+
   app.get('/edit/:id', (req, res) =>
     res.render('edit', { title: 'Editar PDF', id: req.params.id })
   );

@@ -1,0 +1,40 @@
+<%- include('partials/header', { title }) %>
+
+<div class="container mt-4">
+  <h4 class="mb-3">📅 Documentos por vencer</h4>
+
+  <% if (files.length === 0) { %>
+    <div class="alert alert-success">
+      No hay documentos próximos a vencer 🎉
+    </div>
+  <% } else { %>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Código</th>
+          <th>Vigencia fin</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% files.forEach(file => { %>
+          <tr>
+            <td><%= file.titular || 'Sin titular' %></td>
+            <td><%= file.codigo || '-' %></td>
+            <td>
+              <%= new Date(file.vigenciaFin).toLocaleDateString() %>
+            </td>
+            <td>
+              <a href="/view/<%= file._id %>" class="btn btn-sm btn-outline-primary">
+                Ver
+              </a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

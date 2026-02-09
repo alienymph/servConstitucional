@@ -58,12 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>
           <a class="btn btn-sm btn-success me-1"
              href="/api/files/view/${it._id}"
-             target="_blank">Ver</a>
+             >Ver</a>
 
           <a class="btn btn-sm btn-primary me-1"
              href="/api/files/edit/${it._id}"
 
-             target="_blank">Editar</a>
+             >Editar</a>
 
           <button class="btn btn-sm btn-danger"
                   data-id="${it._id}">Eliminar</button>
