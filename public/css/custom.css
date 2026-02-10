@@ -1,32 +1,42 @@
-/* public/css/custom.css - Cottagecore Olivo & Rosa */
+/* public/css/custom.css - Profesional Olivo & Rosa Moderno */
 
 :root {
-  --bg-color: #fcfaf6;        /* crema claro */
-  --card-bg: #ffffff;          /* blanco suave */
-  --card-radius: 1rem;
-  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --font-family: 'Georgia', 'Times New Roman', serif;
-  --primary-color: #7a8450;    /* verde olivo */
-  --secondary-color: #f4c6c6;  /* rosa suave */
-  --btn-shadow: 0 2px 6px rgba(122, 132, 80, 0.3);
-  --hover-color: #a1b078;      /* verde más claro para hover */
-  --text-color: #4b3a2f;       /* marrón oscuro para texto */
+  --bg-color: #fcfaf6;          /* crema claro */
+  --card-bg: #ffffff;           /* blanco suave */
+  --card-radius: 0.8rem;
+  --card-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  --font-family: 'Inter', sans-serif;
+  --primary-color: #7a8450;     /* verde olivo */
+  --secondary-color: #f4c6c6;   /* rosa suave */
+  --btn-shadow: 0 2px 6px rgba(122, 132, 80, 0.25);
+  --hover-color: #a1b078;       /* verde más claro para hover */
+  --text-color: #4b3a2f;        /* marrón oscuro para texto */
+  --text-light: #fff;           /* para texto en botones oscuros */
 }
 
 /* Body */
+/* Body como flex container */
 body {
-  background: var(--bg-color);
-  font-family: var(--font-family);
-  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 100% de altura de la ventana */
   margin: 0;
-  padding: 0;
+  font-family: var(--font-family);
+  background: var(--bg-color);
+  color: var(--text-color);
 }
 
-/* Contenedor */
+/* Main crece para ocupar el espacio disponible */
+main {
+  flex: 1;
+}
+
+
+/* Contenedor principal */
 .container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1rem 2rem;
 }
 
 /* Navbar */
@@ -34,11 +44,19 @@ body {
   background: var(--primary-color) !important;
   border-radius: var(--card-radius);
   box-shadow: var(--card-shadow);
+  padding: 0.8rem 2rem;
 }
 .navbar .nav-link,
 .navbar .navbar-brand {
-  color: #fff !important;
+  color: var(--text-light) !important;
   font-weight: 500;
+  font-size: 1rem;
+}
+
+
+.navbar .nav-link:hover {
+  color: var(--secondary-color) !important;
+  transition: color 0.3s;
 }
 
 /* Cards */
@@ -51,17 +69,17 @@ body {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }
 
 /* Botones */
 .btn-primary {
   background-color: var(--primary-color);
   border: none;
-  color: #fff;
+  color: var(--text-light);
   font-weight: 500;
-  border-radius: 0.8rem;
+  border-radius: var(--card-radius);
   box-shadow: var(--btn-shadow);
   transition: background 0.3s ease, transform 0.2s ease;
 }
@@ -74,8 +92,9 @@ body {
   background-color: var(--secondary-color);
   border: none;
   color: var(--text-color);
-  border-radius: 0.8rem;
+  border-radius: var(--card-radius);
   box-shadow: var(--btn-shadow);
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 .btn-secondary:hover {
   background-color: #f7d1d1;
@@ -87,13 +106,14 @@ input.form-control,
 select.form-control {
   border-radius: 0.6rem;
   border: 1px solid #d9c9b6;
-  padding: 0.5rem;
+  padding: 0.55rem 0.8rem;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 input.form-control:focus,
 select.form-control:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 8px rgba(122, 132, 80, 0.2);
+  outline: none;
 }
 
 /* Tables */
@@ -101,20 +121,41 @@ select.form-control:focus {
   border-radius: var(--card-radius);
   overflow: hidden;
   background-color: var(--card-bg);
+  box-shadow: var(--card-shadow);
 }
 .table thead {
   background-color: var(--secondary-color);
   color: var(--text-color);
+  font-weight: 500;
 }
 .table-hover tbody tr:hover {
-  background-color: #fef6f6;
+  background-color: #f9f4f4;
+  transition: background 0.2s ease;
+}
+.table td, .table th {
+  padding: 0.8rem 1rem;
 }
 
-/* Footer */
+/* ----------------- Footer ----------------- */
 footer {
+  flex-shrink: 0;                   /* no se achica */
+  border-top: 1px solid var(--primary-color); /* línea azul delgada */
   text-align: center;
-  padding: 1rem;
+  padding: 0.4rem 1rem;            /* altura del footer */
   color: #555;
+  font-size: 0.85rem;
+  background-color: #f8f9fa;       /* color de fondo del footer */
+}
+
+footer small {
+  display: block;
+  margin-top: 0.2rem;
+  color: #888;
+}
+
+/* ----------------- Animaciones suaves ----------------- */
+.animate__fadeIn {
+  animation: fadeIn 0.5s ease forwards;
 }
 
 /* Animaciones suaves */
