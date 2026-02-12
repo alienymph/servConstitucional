@@ -13,7 +13,7 @@ async function connectDB(uri) {
 }
 
 function getBucket() {
-  if (!gfsBucket) throw new Error('GridFSBucket no inicializado. Llama a connectDB primero.');
+  if (!gfsBucket) throw new Error('GridFSBucket no inicializado.');
   return gfsBucket;
 }
 

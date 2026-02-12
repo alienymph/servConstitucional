@@ -1,0 +1,45 @@
+<%- include('partials/header', { title: 'Buscar Convenios' }) %>
+
+<div class="container mt-4">
+  <h3>Buscar Convenios</h3>
+
+  <form method="GET" action="/search" class="mb-3">
+    <input
+      type="text"
+      name="q"
+      class="form-control"
+      placeholder="Buscar por nombre o número"
+      value="<%= q || '' %>"
+      required
+    >
+    <button class="btn btn-primary mt-2">
+      Buscar
+    </button>
+  </form>
+
+  <% if (convenios && convenios.length > 0) { %>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Número</th>
+          <th>Unidad Receptora</th>
+          <th>Año</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% convenios.forEach(c => { %>
+          <tr>
+            <td><%= c.numeroConvenio %></td>
+            <td><%= c.nombreUR %></td>
+            <td><%= c.anio %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else if (q) { %>
+    <p>No se encontraron resultados.</p>
+  <% } %>
+
+</div>
+
+<%- include('partials/footer') %>

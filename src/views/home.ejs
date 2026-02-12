@@ -1,40 +1,119 @@
 <%- include('partials/header', { title: 'Inicio' }) %>
 
-<div class="container mt-4">
+<div class="main-container">
 
-  <h2>Bienvenido al sistema de gestión de convenios</h2>
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="content-area">
 
-  <p class="text-muted mt-2">
-    Desde aquí puedes subir, buscar y dar seguimiento a los convenios en formato PDF.
-  </p>
+    <!-- MENÚ SUPERIOR -->
+    <!-- MENÚ SUPERIOR -->
+<div class="menu-container">
 
-  <div class="row mt-4 g-3">
+<a href="/convenios/nueva" class="menu-item text-decoration-none">
+  <div class="menu-icon icon-green">
+    <i class="bi bi-plus-lg"></i>
+  </div>
+  Nuevo Convenio
+</a>
 
-    <div class="col-md-4">
-      <div class="card p-3 h-100">
-        <h5>Subir convenios</h5>
-        <p>Carga nuevos archivos PDF al sistema.</p>
-        <a href="/upload" class="btn btn-primary btn-sm">Ir</a>
-      </div>
+
+  <a href="/manage" class="menu-item text-decoration-none">
+    <div class="menu-icon icon-blue">
+      <i class="bi bi-folder2-open"></i>
     </div>
+    Gestionar Convenios
+  </a>
 
-    <div class="col-md-4">
-      <div class="card p-3 h-100">
-        <h5>Gestionar</h5>
-        <p>Consulta, edita o elimina convenios existentes.</p>
-        <a href="/manage" class="btn btn-primary btn-sm">Ir</a>
+
+
+</div>
+
+    <!-- BIENVENIDA -->
+    <div class="welcome-section">
+      <div class="welcome-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z"/>
+        </svg>
       </div>
-    </div>
 
-    <div class="col-md-4">
-      <div class="card p-3 h-100">
-        <h5>Próximos a vencer</h5>
-        <p>Visualiza convenios cercanos a su fecha límite.</p>
-        <a href="/expiring" class="btn btn-primary btn-sm">Ir</a>
+      <h2>¡Bienvenido al Sistema!</h2>
+      <p>
+        Selecciona una opción del menú para comenzar a gestionar 
+        tus convenios de manera eficiente.
+      </p>
+
+      <div class="stats-grid">
+        <div class="stat-card stat-blue">
+          <p><%= totalActivos %></p>
+          <p>Convenios Activos</p>
+        </div>
+
+        <div class="stat-card stat-red">
+          <p><%= totalPorVencer %></p>
+          <p>Por Vencer</p>
+        </div>
+
+        <div class="stat-card stat-light-blue">
+          <p><%= totalEsteMes %></p>
+          <p>Este Mes</p>
+        </div>
       </div>
     </div>
 
   </div>
+
+  <!-- SIDEBAR -->
+
+<!-- SIDEBAR DERECHA -->
+  <aside>
+
+    <div class="sidebar-header">
+      <h2>Próximos a Vencer</h2>
+    </div>
+
+    <div class="sidebar-items">
+
+      <% if (proximos.length === 0) { %>
+        <p style="color:#999;">No hay convenios próximos a vencer.</p>
+      <% } %>
+
+      <% proximos.forEach(c => { 
+          const hoy = new Date();
+          const dias = Math.ceil((new Date(c.vigenciaFin) - hoy) / (1000*60*60*24));
+          let clase = "urgency-low";
+          let badge = "badge-on-time";
+          let texto = "En tiempo";
+
+          if (dias <= 7) {
+            clase = "urgency-high";
+            badge = "badge-urgent";
+            texto = "Urgente";
+          } else if (dias <= 30) {
+            clase = "urgency-medium";
+            badge = "badge-soon";
+            texto = "Pronto";
+          }
+      %>
+
+        <div class="sidebar-card <%= clase %>">
+          <div class="card-header">
+            <span class="urgency-badge <%= badge %>"><%= texto %></span>
+            <span class="days-left"><%= dias %> días</span>
+          </div>
+          <div class="card-title"><%= c.titular %></div>
+          <div class="card-description"><%= c.unidadReceptora || "Convenio registrado" %></div>
+        </div>
+
+      <% }) %>
+
+    </div>
+
+<a href="/manage" class="see-all-btn text-decoration-none d-block text-center">
+  Ver todos los convenios
+</a>
+
+
+  </aside>
 
 </div>
 

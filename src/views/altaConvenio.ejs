@@ -1,0 +1,59 @@
+<%- include('partials/header', { title: 'Alta de Convenio' }) %>
+
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-body">
+      <h4>Alta de Convenio</h4>
+      <form id="altaConvenioForm">
+        <div class="mb-3">
+          <label for="nombreUR" class="form-label">Unidad Receptora / Empresa</label>
+          <input type="text" id="nombreUR" name="nombreUR" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="/manage" class="btn btn-secondary">Cancelar</a>
+      </form>
+      <div id="toastContainer"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("altaConvenioForm");
+
+  if (!form) {
+    console.error("No se encontró el formulario");
+    return;
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const nombreUR = document.getElementById("nombreUR").value;
+
+    try {
+      const response = await fetch("/convenios/alta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombreUR })
+      });
+
+      const data = await response.json();
+
+      if (data.ok) {
+        alert("Convenio registrado correctamente!");
+        window.location.href = "/manage";
+      } else {
+        alert("Error: " + (data.message || "Algo salió mal"));
+      }
+
+    } catch (error) {
+      console.error("Error en fetch:", error);
+      alert("Error al conectar con el servidor");
+    }
+  });
+});
+</script>
+
+
+<%- include('partials/footer') %>
