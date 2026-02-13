@@ -9,7 +9,7 @@
 html, body {
   height: 100%;
   width: 100%;
-  background-color: #f8f9fa;
+  background-color: #dcdcfc;
 }
 
 .title-font {
@@ -30,20 +30,43 @@ html, body {
 .solid-blue {
   background-color: #5B5FFF;
 }
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-container {
+  flex: 1; /* ocupa todo el espacio disponible */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 
 /* ===== HEADER ===== */
+/* ===== HEADER FULL WIDTH ===== */
+
 header {
+  width: 100%;
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e5e7eb;
+  padding: 24px 40px; /* padding horizontal amplio */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
   flex-wrap: wrap;
-  gap: 16px;
+  position: relative;
+}
+
+
+.header-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
 }
 
 .header-left {
@@ -53,8 +76,8 @@ header {
 }
 
 .logo {
-  width: 64px;
-  height: 64px;
+  width: 70px;
+  height: 70px;
   border-radius: 16px;
   background-color: #5B5FFF;
   display: flex;
@@ -62,51 +85,41 @@ header {
   justify-content: center;
   box-shadow: 0 4px 15px rgba(91, 95, 255, 0.3);
   animation: float 3s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
 .logo svg {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   color: white;
 }
 
 .header-title h1 {
   font-family: 'Outfit', sans-serif;
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 700;
   color: #5B5FFF;
 }
 
 .header-title p {
   color: #999;
-  font-size: 14px;
+  font-size: 15px;
   margin-top: 4px;
 }
 
 .header-user {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .header-user-info {
   text-align: right;
 }
 
-.header-user-info p:first-child {
-  font-size: 14px;
-  font-weight: 600;
-  color: #333;
-}
-
-.header-user-info p:last-child {
-  font-size: 12px;
-  color: #999;
-}
-
 .user-avatar {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background-color: #5B5FFF;
   color: white;
@@ -116,6 +129,55 @@ header {
   font-weight: 700;
   box-shadow: 0 4px 15px rgba(91, 95, 255, 0.3);
 }
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 992px) {
+  header {
+    padding: 20px 24px;
+  }
+
+  .header-title h1 {
+    font-size: 28px;
+  }
+
+  .logo {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .header-left {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .header-user {
+    justify-content: center;
+  }
+
+  .header-user-info {
+    text-align: center;
+  }
+
+  .header-title h1 {
+    font-size: 24px;
+  }
+
+  .logo {
+    width: 55px;
+    height: 55px;
+  }
+}
+
 
 /* ===== NAVEGACIÓN ===== */
 .menu-container {
@@ -205,6 +267,19 @@ header {
 .main-container {
   display: flex;
   gap: 24px;
+  justify-content: center; /* centra los hijos horizontalmente */
+  align-items: flex-start; /* alineación vertical superior */
+  padding: 24px; /* espacio alrededor del main-container */
+  flex-wrap: wrap; /* para pantallas pequeñas */
+}
+
+.content-area {
+  flex: 1;
+  min-width: 300px; /* evita que se comprima demasiado */
+  max-width: 800px; /* límite para que no quede muy grande */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 main {
@@ -218,8 +293,17 @@ main {
 
 .welcome-section {
   text-align: center;
-  padding: 48px 0;
+  padding: 48px 16px; /* reduce un poco los espacios para que no quede vacío */
 }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  max-width: 480px; /* menos espacio muerto */
+  margin: 0 auto;
+}
+
 
 .welcome-icon {
   width: 96px;
@@ -325,6 +409,11 @@ aside {
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  width: 320px;
+  min-width: 280px;
+
+
 }
 
 .sidebar-header {
