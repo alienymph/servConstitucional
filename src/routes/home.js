@@ -1,31 +1,35 @@
 const express = require('express');
 const router = express.Router();
-const Convenio = require('../models/Convenio');
+const FileMeta = require('../models/FileMeta');
 
-// HOME con estadísticas
+// HOME con estadísticas basadas en PDFs
 router.get('/', async (req, res) => {
   try {
     const hoy = new Date();
-    const convenios = await Convenio.find();
+    const files = await FileMeta.find().lean();
 
-    const activos = convenios.filter(c =>
-      c.vigenciaFin && new Date(c.vigenciaFin) >= hoy
+    // Activos
+    const activos = files.filter(f =>
+      f.vigenciaFin && new Date(f.vigenciaFin) >= hoy
     );
 
-    const porVencer = activos.filter(c => {
-      const dias = (new Date(c.vigenciaFin) - hoy) / (1000 * 60 * 60 * 24);
+    // Por vencer (30 días)
+    const porVencer = activos.filter(f => {
+      const dias = (new Date(f.vigenciaFin) - hoy) / (1000 * 60 * 60 * 24);
       return dias <= 30;
     });
 
-    const esteMes = convenios.filter(c => {
-      if (!c.vigenciaInicio) return false;
-      const fecha = new Date(c.vigenciaInicio);
+    // Este mes (por fecha de inicio)
+    const esteMes = files.filter(f => {
+      if (!f.vigenciaInicio) return false;
+      const fecha = new Date(f.vigenciaInicio);
       return (
         fecha.getMonth() === hoy.getMonth() &&
         fecha.getFullYear() === hoy.getFullYear()
       );
     });
 
+    // Próximos a vencer (sidebar)
     const proximos = porVencer
       .sort((a, b) =>
         new Date(a.vigenciaFin) - new Date(b.vigenciaFin)
@@ -49,7 +53,5 @@ router.get('/', async (req, res) => {
     });
   }
 });
-
-
 
 module.exports = router;

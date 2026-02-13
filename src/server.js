@@ -7,11 +7,10 @@ const { connectDB } = require('./config/db');
 
 // Modelos y rutas
 const FileMeta = require('./models/FileMeta');
-const Convenio = require('./models/Convenio');
 const filesRouter = require('./routes/files');
 const homeRoutes = require('./routes/home');
-const conveniosRoutes = require('./routes/convenios');
-const apiConvenios = require('./routes/convenios');
+
+
 
 const app = express(); // 🔹 app debe declararse antes de usarlo
 const PORT = process.env.PORT || 3000;
@@ -59,11 +58,11 @@ async function start() {
 
   // 🔌 API
   app.use('/api/files', filesRouter);
-  app.use('/api/convenios', apiConvenios); // ✅ API convenios
+
 
   // 🌐 Rutas principales
   app.use('/', homeRoutes);
-  app.use('/convenios', conveniosRoutes);
+
 
   // 📅 Documentos por vencer
   app.get('/expiring', async (req, res) => {
@@ -85,37 +84,17 @@ async function start() {
 
   // 📤 Subir PDF
   app.get('/upload', (req, res) =>
-    res.render('upload', { title: 'Subir PDF' })
+    res.render('upload', { title: 'Nuevo Convenio' })
   );
 
   // 📂 Gestionar PDFs
-  app.get('/manage', async (req, res) => {
-    try {
-      const convenios = await Convenio.find().sort({ numeroConvenio: 1 }).lean();
-      res.render('manage', { title: 'Gestionar Convenios', convenios });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Error al cargar convenios');
-    }
-  });
+// 📂 Gestionar PDFs
+app.get('/manage', (req, res) => {
+  res.render('manage', { title: 'Gestionar Convenios' });
+});
 
-  // 🔎 Buscador de convenios
-  app.get('/search', async (req, res) => {
-    try {
-      const q = req.query.q || '';
-      const query = { $or: [{ nombreUR: { $regex: q, $options: 'i' } }] };
 
-      if (!isNaN(Number(q))) {
-        query.$or.push({ numeroConvenio: Number(q) });
-      }
-
-      const items = await Convenio.find(query).sort({ numeroConvenio: 1 }).lean();
-      res.render('manage', { title: 'Resultados de búsqueda', convenios: items });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Error en la búsqueda de convenios');
-    }
-  });
+ 
 
   // ✏️ Editar PDF
   app.get('/edit/:id', (req, res) =>
