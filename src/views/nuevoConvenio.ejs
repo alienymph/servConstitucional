@@ -1,0 +1,38 @@
+<%- include('partials/header', { title: 'Dar de Alta Convenio' }) %>
+
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <h2 class="mb-4 text-center">Dar de Alta Convenio</h2>
+
+      <form action="/convenios" method="POST">
+
+        <div class="mb-3">
+          <label class="form-label">Unidad Receptora</label>
+          <input 
+            type="text" 
+            name="empresaNombre"
+            id="empresaInput"
+            class="form-control"
+            placeholder="Escribe la unidad receptora..."
+            required
+          >
+        </div>
+
+        <div class="alert alert-info">
+          Se generará automáticamente el folio del convenio.
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <a href="/manage" class="btn btn-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Crear Convenio</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

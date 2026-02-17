@@ -1,0 +1,38 @@
+<%- include('partials/header', { title: 'Empresas Vinculadas' }) %>
+
+<div class="main-container">
+  <div class="content-area">
+    <main>
+      <h2 class="title-font">Empresas/UR Vinculadas</h2>
+
+      <!-- Buscador -->
+      <div class="form-group">
+        <input id="buscar" type="text" placeholder="Buscar empresa..." class="form-input">
+      </div>
+
+      <!-- Lista de empresas -->
+      <div class="sidebar-items">
+        <% empresas.forEach(e => { %>
+          <a href="/vinculaciones/empresa/<%= e._id %>" class="sidebar-card">
+            <div class="card-title"><%= e.nombre %></div>
+          </a>
+        <% }) %>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  function filtrar() {
+    const input = document.getElementById('buscar').value.toLowerCase();
+    const items = document.querySelectorAll('.sidebar-card');
+    items.forEach(item => {
+      const text = item.innerText.toLowerCase();
+      item.style.display = text.includes(input) ? '' : 'none';
+    });
+  }
+
+  document.getElementById('buscar').addEventListener('keyup', filtrar);
+</script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,8 @@
+<h2>Detalle de Vinculación</h2>
+<p><strong>Empresa:</strong> <%= vinculacion.empresa.nombre %></p>
+<p><strong>Folio:</strong> <%= vinculacion.folio %></p>
+<p><strong>PDF:</strong> <a href="/files/<%= vinculacion.pdfId._id %>"><%= vinculacion.pdfId.nombre %></a></p>
+<p><strong>Tipo:</strong> <%= vinculacion.tipo %></p>
+<p><strong>Vigencia:</strong> <%= vinculacion.vigencia ? vinculacion.vigencia.toISOString().split('T')[0] : '' %></p>
+<p><strong>Comentarios:</strong> <%= vinculacion.comentarios %></p>
+<a href="/vinculaciones/empresa/<%= vinculacion.empresa._id %>">Volver</a>

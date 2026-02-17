@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+
+<div class="container mt-4">
+  <div class="card shadow-sm p-4">
+
+    <h3 class="mb-4">Editar Vinculación</h3>
+
+    <form action="/vinculaciones/editar/<%= vinculacion._id %>" method="POST">
+
+      <!-- Empresa -->
+      <div class="mb-3">
+        <label for="empresa" class="form-label">Empresa / UR</label>
+        <select name="empresa" id="empresa" class="form-select" required>
+          <% empresas.forEach(emp => { %>
+            <option value="<%= emp._id %>"
+              <%= emp._id.toString() === vinculacion.empresa.toString() ? 'selected' : '' %>>
+              <%= emp.nombre %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <!-- PDF -->
+      <div class="mb-3">
+        <label for="pdfId" class="form-label">PDF</label>
+        <select name="pdfId" id="pdfId" class="form-select">
+          <option value="">Seleccionar PDF</option>
+          <% archivos.forEach(pdf => { %>
+            <option value="<%= pdf._id %>"
+              <%= vinculacion.pdfId && vinculacion.pdfId.toString() === pdf._id.toString() ? 'selected' : '' %>>
+              <%= pdf.filename %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <!-- Tipo -->
+      <div class="mb-3">
+        <label for="tipo" class="form-label">Tipo</label>
+        <input type="text"
+               name="tipo"
+               id="tipo"
+               class="form-control"
+               value="<%= vinculacion.tipo || '' %>">
+      </div>
+
+      <!-- Vigencia -->
+      <div class="mb-3">
+        <label for="vigencia" class="form-label">Vigencia</label>
+        <input type="date"
+               name="vigencia"
+               id="vigencia"
+               class="form-control"
+               value="<%= vinculacion.vigencia ? vinculacion.vigencia.toISOString().split('T')[0] : '' %>">
+      </div>
+
+      <!-- Comentarios -->
+      <div class="mb-3">
+        <label for="comentarios" class="form-label">Comentarios</label>
+        <textarea name="comentarios"
+                  id="comentarios"
+                  class="form-control"
+                  rows="3"><%= vinculacion.comentarios || '' %></textarea>
+      </div>
+
+      <!-- Botones -->
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success">
+          Guardar cambios
+        </button>
+
+        <a href="/vinculaciones/empresa/<%= vinculacion.empresa %>"
+           class="btn btn-secondary">
+          Cancelar
+        </a>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>

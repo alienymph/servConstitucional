@@ -3,21 +3,52 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
+const methodOverride = require('method-override');
 const { connectDB } = require('./config/db');
+const vinculacionesRouter = require('./routes/vinculaciones');
+const contratosRouter = require('./routes/contratos');
 
-// Modelos y rutas
+// ─── Declarar app ─────────────────────────────
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// ─── Modelos y routers ───────────────────────
 const FileMeta = require('./models/FileMeta');
 const filesRouter = require('./routes/files');
 const homeRoutes = require('./routes/home');
+const conveniosRouter = require('./routes/convenios'); // Si ya tienes convenios
 
+// ─── Middlewares ─────────────────────────────
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static('public'));
 
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        styleSrc: ["'self'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com", "'unsafe-inline'"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https:"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: []
+      }
+    }
+  })
+);
 
-const app = express(); // 🔹 app debe declararse antes de usarlo
-const PORT = process.env.PORT || 3000;
+// ─── Vistas ─────────────────────────────────
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-// 🔌 Conexión a MongoDB
+// ─── Conexión a MongoDB ─────────────────────
 async function start() {
-  const MONGO_URI = process.env.MONGO_URI ||
+  const MONGO_URI = process.env.MONGO_URI || 
     'mongodb+srv://BaseDeDatos:leprechaun12@cluster0.v591igu.mongodb.net/?appName=Cluster0';
 
   if (!MONGO_URI) {
@@ -26,45 +57,30 @@ async function start() {
   }
 
   await connectDB(MONGO_URI);
-  console.log('Conectado a MongoDB y GridFS inicializado');
+  console.log('✅ Conectado a MongoDB y GridFS inicializado');
 
-  // 📦 Middlewares
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.static(path.join(__dirname, '..', 'public')));
-  app.use(express.static('public'));
+  // ─── Rutas ────────────────────────────────
+  app.use('/api/files', filesRouter);
+  app.use('/', homeRoutes);
+  app.use('/vinculaciones', vinculacionesRouter);
+  app.use('/contratos', contratosRouter);
+  app.use('/', conveniosRouter);
 
-  // 🛡️ Helmet
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
-          styleSrc: ["'self'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com", "'unsafe-inline'"],
-          fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net"],
-          imgSrc: ["'self'", "data:"],
-          connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https:"],
-          objectSrc: ["'none'"],
-          upgradeInsecureRequests: []
-        }
-      }
-    })
+  // ─── Otras rutas de ejemplo ───────────────
+
+  app.get('/upload', (req, res) =>
+    res.render('upload', { title: 'Nuevo Convenio' })
   );
 
-  // 🖼️ Vistas
-  app.set('view engine', 'ejs');
-  app.set('views', path.join(__dirname, 'views'));
+  app.get('/manage', (req, res) => {
+    res.render('manage', { title: 'Gestionar Convenios' });
+  });
 
-  // 🔌 API
-  app.use('/api/files', filesRouter);
+  app.get('/edit/:id', (req, res) =>
+    res.render('edit', { title: 'Editar PDF', id: req.params.id })
+  );
 
-
-  // 🌐 Rutas principales
-  app.use('/', homeRoutes);
-
-
-  // 📅 Documentos por vencer
+  // Documentos próximos a vencer
   app.get('/expiring', async (req, res) => {
     try {
       const today = new Date();
@@ -82,38 +98,20 @@ async function start() {
     }
   });
 
-  // 📤 Subir PDF
-  app.get('/upload', (req, res) =>
-    res.render('upload', { title: 'Nuevo Convenio' })
-  );
-
-  // 📂 Gestionar PDFs
-// 📂 Gestionar PDFs
-app.get('/manage', (req, res) => {
-  res.render('manage', { title: 'Gestionar Convenios' });
-});
-
-
- 
-
-  // ✏️ Editar PDF
-  app.get('/edit/:id', (req, res) =>
-    res.render('edit', { title: 'Editar PDF', id: req.params.id })
-  );
-
-  // ❌ 404
+  // ─── 404 ──────────────────────────────────
   app.use((req, res) => {
     res.status(404).render('404', { title: 'No encontrado' });
   });
 
-  // 💥 Error handler
+  // ─── Error handler ───────────────────────
   app.use((err, req, res, next) => {
     console.error(err);
     res.status(500).send('Internal Server Error');
   });
 
+  // ─── Servidor ───────────────────────────
   app.listen(PORT, () => {
-    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`🚀 Server corriendo en http://localhost:${PORT}`);
   });
 }
 

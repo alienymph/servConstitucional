@@ -1,0 +1,21 @@
+<h3>Nuevo Contrato para <%= empresa.nombre %></h3>
+
+<form action="/contratos/nuevo/<%= empresa._id %>" method="POST">
+  <label>PDF:</label>
+  <select name="pdfId" required>
+    <% archivos.forEach(a => { %>
+      <option value="<%= a._id %>"><%= a.nombre %></option>
+    <% }) %>
+  </select>
+
+  <label>Tipo:</label>
+  <input type="text" name="tipo">
+
+  <label>Vigencia:</label>
+  <input type="date" name="vigencia">
+
+  <label>Comentarios:</label>
+  <textarea name="comentarios"></textarea>
+
+  <button type="submit" class="btn btn-success">Guardar Contrato</button>
+</form>
