@@ -5,6 +5,7 @@ const router = express.Router();
 const FileMeta = require('../models/FileMeta');
 const { ObjectId } = require('mongodb');
 const pdfParse = require('pdf-parse');
+const path = require('path');
 
 // GridFS service
 const { uploadBufferToGridFS, downloadStreamById, deleteById } =
@@ -33,6 +34,18 @@ router.post('/upload', upload.single('pdffile'), async (req, res) => {
       req.file.originalname,
       req.file.mimetype
     );
+
+//NUEVO CAMBIO
+
+const Vinculacion = require('../../models/Vinculacion'); 
+// 🔥 Si viene contratoId, asociar el PDF al contrato
+if (req.body.contratoId) {
+  await Vinculacion.findByIdAndUpdate(
+    req.body.contratoId,
+    { pdf: meta._id }
+  );
+}
+
 
     // Extraer texto del PDF
     let contentText = '';
@@ -243,7 +256,19 @@ router.post('/edit/:id', async (req, res) => {
 
 
 
+router.get('/api/files/:id', async (req, res) => {
+  try {
+    const file = await FileMeta.findById(req.params.id);
+    if (!file) return res.status(404).send('Archivo no encontrado');
 
+    res.setHeader('Content-Type', 'application/pdf');
+    res.sendFile(path.resolve(file.path));
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al abrir archivo');
+  }
+});
 
 
 module.exports = router;

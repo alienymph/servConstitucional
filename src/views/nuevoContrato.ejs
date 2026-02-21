@@ -1,21 +1,125 @@
-<h3>Nuevo Contrato para <%= empresa.nombre %></h3>
+<%- include('partials/header', { title: 'Nuevo Contrato' }) %>
 
-<form action="/contratos/nuevo/<%= empresa._id %>" method="POST">
-  <label>PDF:</label>
-  <select name="pdfId" required>
-    <% archivos.forEach(a => { %>
-      <option value="<%= a._id %>"><%= a.nombre %></option>
-    <% }) %>
-  </select>
+<div class="main-container">
+  <div class="content-area">
+    <main>
 
-  <label>Tipo:</label>
-  <input type="text" name="tipo">
+      <h2 class="title-font mb-4">
+        Nuevo Contrato - <%= empresa.nombre %>
+      </h2>
 
-  <label>Vigencia:</label>
-  <input type="date" name="vigencia">
+      <form action="/contratos/nuevo/<%= empresa._id %>"
+            method="POST"
+            class="form-container">
 
-  <label>Comentarios:</label>
-  <textarea name="comentarios"></textarea>
+        <!-- EMPRESA -->
+        <div class="form-group">
+          <label>Empresa / UR</label>
+          <input type="text"
+                 value="<%= empresa.nombre %>"
+                 disabled>
+        </div>
 
-  <button type="submit" class="btn btn-success">Guardar Contrato</button>
-</form>
+        <!-- TIPO -->
+        <div class="form-group">
+          <label>Tipo</label>
+          <input type="text"
+                 name="tipo"
+                 placeholder="Ej. Convenio, Acuerdo">
+        </div>
+
+        <!-- TITULAR -->
+        <div class="form-group">
+          <label>Titular</label>
+          <input type="text" name="titular">
+        </div>
+
+        <div class="form-group">
+          <label>Cargo</label>
+          <input type="text" name="cargo">
+        </div>
+
+        <div class="form-group">
+          <label>Correo</label>
+          <input type="email" name="correo">
+        </div>
+
+        <div class="form-group">
+          <label>Apoderado Legal</label>
+          <input type="text" name="apoderadoLegal">
+        </div>
+
+        <div class="form-group">
+          <label>Enlace Expediente</label>
+          <input type="text" name="enlaceExpediente">
+        </div>
+
+        <div class="form-group">
+          <label>Año</label>
+          <input type="number" name="anio">
+        </div>
+
+        <div class="form-group">
+          <label>Firma</label>
+          <input type="text" name="firma">
+        </div>
+
+        <div class="form-group">
+          <label>Nacionalidad</label>
+          <input type="text" name="nacionalidad">
+        </div>
+
+        <div class="form-group">
+          <label>Código</label>
+          <input type="text" name="codigo">
+        </div>
+
+        <div class="form-group">
+          <label>RFC</label>
+          <input type="text" name="rfc">
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="cuentaINE" value="true">
+            Cuenta con INE
+          </label>
+        </div>
+
+        <!-- VIGENCIAS -->
+        <div class="form-group">
+          <label>Vigencia inicio</label>
+          <input type="date" name="vigenciaInicio">
+        </div>
+
+        <div class="form-group">
+          <label>Vigencia fin</label>
+          <input type="date" name="vigenciaFin">
+        </div>
+
+        <!-- COMENTARIOS -->
+        <div class="form-group">
+          <label>Comentarios</label>
+          <textarea name="comentarios"
+                    placeholder="Observaciones..."></textarea>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="d-flex gap-2">
+          <button type="submit" class="see-all-btn">
+            Crear contrato
+          </button>
+
+          <a href="/vinculaciones/empresa/<%= empresa._id %>"
+             class="btn btn-secondary">
+            Cancelar
+          </a>
+        </div>
+
+      </form>
+
+    </main>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

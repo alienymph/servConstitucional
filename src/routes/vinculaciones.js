@@ -2,285 +2,272 @@ const express = require('express');
 const router = express.Router();
 const Vinculacion = require('../models/Vinculacion');
 const Empresa = require('../models/Empresa');
-const FileMeta = require('../models/FileMeta');
 
-// ─── Formulario de nueva vinculación ─────────
-router.get('/nuevo', async (req, res) => {
-  try {
-    const empresas = await Empresa.find().lean(); // Lista de empresas
-    const archivos = await FileMeta.find().lean(); // Lista de PDFs
 
-    res.render('nuevoVinculacion', { empresas, archivos });
-  } catch (err) {
-    console.error('Error al cargar formulario:', err);
-    res.status(500).send('Error al cargar el formulario de vinculación');
-  }
+
+// ─── FORMULARIO NUEVA VINCULACIÓN ─────────
+router.get('/nuevo', (req, res) => {
+  res.render('nuevoVinculacion');
 });
 
-// ─── Guardar vinculación ─────────────────────
+
+// ─── GUARDAR VINCULACIÓN ─────────
 router.post('/nuevo', async (req, res) => {
   try {
-    const { empresaNombre, pdfId, tipo, vigencia, comentarios } = req.body;
+    const {
+      empresaNombre,
+      tipo,
+      vigenciaInicio,
+      vigenciaFin,
+      comentarios
+    } = req.body;
+    // 🔥 CORRECCIÓN DE TIMEZONE
+    const fechaInicio = vigenciaInicio
+      ? new Date(vigenciaInicio + 'T12:00:00')
+      : null;
 
-    // Crear empresa si no existe
+    const fechaFin = vigenciaFin
+      ? new Date(vigenciaFin + 'T12:00:00')
+      : null;
+
     let empresa = await Empresa.findOne({ nombre: empresaNombre });
     if (!empresa) {
-      empresa = new Empresa({ nombre: empresaNombre });
-      await empresa.save();
+      empresa = await Empresa.create({ nombre: empresaNombre });
     }
 
-// Calcular número consecutivo por empresa
-const count = await Vinculacion.countDocuments({ empresa: empresa._id });
-const numeroConsecutivo = String(count + 1).padStart(3, '0'); // 001, 002, 003
+    const count = await Vinculacion.countDocuments({ empresa: empresa._id });
+    const numero = String(count + 1).padStart(3, '0');
+    const anio = new Date().getFullYear();
+    const folio = `${empresa.nombre.slice(0,3).toUpperCase()}-${anio}-${numero}`;
 
-// Año actual
-const año = new Date().getFullYear();
+await Vinculacion.create({
+  empresa: empresa._id,
+  folio,
+  tipo,
+  vigenciaInicio: fechaInicio,
+  vigenciaFin: fechaFin,
+  comentarios
+});
 
-// Folio por empresa: XXX-AÑO-NumeroConsecutivo (3 primeras letras)
-const folioEmpresa = `${empresa.nombre.slice(0,3).toUpperCase()}-${año}-${numeroConsecutivo}`;
-
-
-    // Crear vinculación
-    const vinculacion = new Vinculacion({
-      empresa: empresa._id,
-      folio: folioEmpresa,
-      pdfId,
-      tipo,
-      vigencia,
-      comentarios
-    });
-
-    await vinculacion.save();
 
     res.redirect(`/vinculaciones/empresa/${empresa._id}`);
-  } catch (err) {
-    console.error('Error al guardar vinculación:', err);
-    res.status(500).send('Error al guardar la vinculación');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al crear vinculación');
   }
 });
 
-// ─── Listado de todas las empresas/UR vinculadas ─────────
+
 router.get('/empresas', async (req, res) => {
   try {
-    const { orden } = req.query; // 'alfabetico' o 'reciente'
+    const search = req.query.search || '';
+    const sortQuery = req.query.sort || 'nombre-asc';
+    let sortOption;
 
-    let sortOption = {};
-    if (orden === 'alfabetico') {
-      sortOption = { nombre: 1 }; // Ascendente
-    } else if (orden === 'reciente') {
-      sortOption = { createdAt: -1 }; // Más reciente primero
+    switch(sortQuery) {
+      case 'nombre-asc':
+        sortOption = { nombre: 1 }; break;
+      case 'nombre-desc':
+        sortOption = { nombre: -1 }; break;
+      case 'fecha-asc':
+        sortOption = { createdAt: 1 }; break;
+      case 'fecha-desc':
+        sortOption = { createdAt: -1 }; break;
+      default:
+        sortOption = { nombre: 1 };
     }
 
-    const empresas = await Empresa.find().sort(sortOption).lean();
-    res.render('manageVinculacion', { empresas, orden });
-  } catch (err) {
-    console.error('Error al cargar empresas:', err);
-    res.status(500).send('Error al cargar las empresas');
+    // 🔹 Agregación con conteo de vinculaciones
+    const empresas = await Empresa.aggregate([
+      {
+        $match: { nombre: { $regex: search, $options: 'i' } }
+      },
+      {
+        $lookup: {
+          from: 'vinculacions', // revisa tu colección real
+          localField: '_id',
+          foreignField: 'empresa',
+          as: 'vinculaciones'
+        }
+      },
+      {
+        $addFields: { contratosCount: { $size: '$vinculaciones' } }
+      },
+      {
+        $project: { nombre: 1, createdAt: 1, contratosCount: 1 }
+      },
+      {
+        $sort: sortOption
+      }
+    ]);
+
+    res.render('manageVinculacion', { empresas, search, sort: sortQuery });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al cargar empresas');
   }
 });
 
 
-// ─── Vista de una empresa con sus vinculaciones ─────────
+// ─── VINCULACIONES DE UNA EMPRESA ─────────
 router.get('/empresa/:id', async (req, res) => {
-  try {
-    const empresa = await Empresa.findById(req.params.id).lean();
-    if (!empresa) return res.status(404).send('Empresa no encontrada');
+  const empresa = await Empresa.findById(req.params.id).lean();
+  const vinculaciones = await Vinculacion.find({ empresa: empresa._id }).lean();
+  const vinculosCount = vinculaciones.length;
 
-    const vinculaciones = await Vinculacion.find({ empresa: empresa._id })
-      .populate('pdfId')
-      .lean();
-
-    // Contar número de vinculaciones
-    const vinculosCount = await Vinculacion.countDocuments({ empresa: empresa._id });
-
-    res.render('empresaVinculacion', { empresa, vinculaciones, vinculosCount });
-  } catch (err) {
-    console.error('Error al cargar la empresa:', err);
-    res.status(500).send('Error al cargar la empresa');
-  }
+  res.render('empresaVinculacion', {
+    empresa,
+    vinculaciones,
+    vinculosCount
+  });
 });
 
 
-// ─── NUEVAS RUTAS DE EDITAR Y ELIMINAR ─────────
-// ─── Formulario para editar una vinculación ─────────
+// ─── EDITAR VINCULACIÓN (FORM) ─────────
 router.get('/editar/:id', async (req, res) => {
   try {
-    const vinculacion = await Vinculacion.findById(req.params.id)
-      .populate('empresa')
-      .populate('pdfId')
-      .lean();
-    if (!vinculacion) return res.status(404).send('Vinculación no encontrada');
+    const vinculacion = await Vinculacion.findById(req.params.id).lean();
 
-    const empresas = await Empresa.find().lean(); // Para seleccionar otra empresa si se quiere
-    const archivos = await FileMeta.find().lean(); // Para cambiar PDF
+    if (!vinculacion) {
+      return res.status(404).send('Vinculación no encontrada');
+    }
 
-    res.render('editarVinculacion', { vinculacion, empresas, archivos });
-  } catch (err) {
-    console.error('Error al cargar formulario de edición:', err);
-    res.status(500).send('Error al cargar el formulario de edición');
+    res.render('editarVinculacion', { vinculacion });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al cargar edición');
   }
 });
 
-// ─── Guardar cambios de la vinculación ─────────
-router.post('/editar/:id', async (req, res) => {
-  try {
-    const { empresaNombre, pdfId, tipo, vigencia, comentarios } = req.body;
 
-    let empresa = await Empresa.findOne({ nombre: empresaNombre });
-    if (!empresa) {
-      empresa = new Empresa({ nombre: empresaNombre });
-      await empresa.save();
+// ─── VER VINCULACIÓN ─────────
+router.get('/ver/:id', async (req, res) => {
+  try {
+    const vinculacion = await Vinculacion.findById(req.params.id).lean();
+
+    if (!vinculacion) {
+      return res.status(404).send('Vinculación no encontrada');
     }
 
-    router.post('/editar/:id', async (req, res) => {
+    res.render('verContrato', { vinculacion });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al cargar vinculación');
+  }
+});
+
+
+
+
+
+
+// ─── GUARDAR EDICIÓN VINCULACIÓN ─────────
+router.post('/editar/:id', async (req, res) => {
   try {
-    const { tipo, vigencia, comentarios, pdfId } = req.body;
+    const {
+      tipo,
+      vigenciaInicio,
+      vigenciaFin,
+      comentarios,
+      titular,
+      cargo,
+      correo,
+      apoderadoLegal,
+      enlaceExpediente,
+      anio,
+      firma,
+      nacionalidad,
+      codigo,
+      rfc,
+      cuentaINE
+    } = req.body;
+
+    const fechaInicio = vigenciaInicio
+      ? new Date(vigenciaInicio + 'T12:00:00')
+      : null;
+
+    const fechaFin = vigenciaFin
+      ? new Date(vigenciaFin + 'T12:00:00')
+      : null;
 
     const vinculacion = await Vinculacion.findByIdAndUpdate(
       req.params.id,
       {
         tipo,
-        vigencia,
+        vigenciaInicio: fechaInicio,
+        vigenciaFin: fechaFin,
         comentarios,
-        pdfId
+        titular,
+        cargo,
+        correo,
+        apoderadoLegal,
+        enlaceExpediente,
+        anio,
+        firma,
+        nacionalidad,
+        codigo,
+        rfc,
+        cuentaINE: cuentaINE ? true : false
       },
       { new: true }
     );
 
+    if (!vinculacion) {
+      return res.status(404).send('Vinculación no encontrada');
+    }
+
     res.redirect(`/vinculaciones/empresa/${vinculacion.empresa}`);
+
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error al actualizar');
+    res.status(500).send('Error al editar vinculación');
   }
 });
 
 
- //ELIMINAR
 
-
-
-
-    // Actualizar número consecutivo si se cambió de empresa
-    const count = await Vinculacion.countDocuments({ empresa: empresa._id });
-const numeroConsecutivo = String(count + 1).padStart(3, '0'); // 001, 002, 003
-const año = new Date().getFullYear();
-const folioEmpresa = `${empresa.nombre.slice(0,3).toUpperCase()}-${año}-${numeroConsecutivo}`;
-
-
-    await Vinculacion.findByIdAndUpdate(req.params.id, {
-      empresa: empresa._id,
-      folio: folioEmpresa,
-      pdfId,
-      tipo,
-      vigencia,
-      comentarios
-    });
-
-    res.redirect(`/vinculaciones/empresa/${empresa._id}`);
-  } catch (err) {
-    console.error('Error al guardar cambios en la vinculación:', err);
-    res.status(500).send('Error al guardar los cambios');
-  }
-});
-
-// ─── Eliminar una vinculación ─────────
+// ─── ELIMINAR VINCULACIÓN ─────────
 router.post('/eliminar/:id', async (req, res) => {
-  try {
-    const vinculacion = await Vinculacion.findById(req.params.id);
-    if (!vinculacion) return res.status(404).send('Vinculación no encontrada');
-
-    await Vinculacion.findByIdAndDelete(req.params.id);
-
-    res.redirect(`/vinculaciones/empresa/${vinculacion.empresa}`);
-  } catch (err) {
-    console.error('Error al eliminar vinculación:', err);
-    res.status(500).send('Error al eliminar la vinculación');
-  }
+  const vinculacion = await Vinculacion.findById(req.params.id);
+  await Vinculacion.findByIdAndDelete(req.params.id);
+  res.redirect(`/vinculaciones/empresa/${vinculacion.empresa}`);
 });
-// ─── EDITAR EMPRESA (FORMULARIO) ─────────
+
+
+// ─── EDITAR EMPRESA ─────────
 router.get('/empresas/:id/editar', async (req, res) => {
-  try {
-    const empresa = await Empresa.findById(req.params.id).lean();
-    if (!empresa) return res.status(404).send('Empresa no encontrada');
-
-    res.render('editarEmpresa', { empresa });
-  } catch (err) {
-    console.error('Error al cargar empresa para editar:', err);
-    res.status(500).send('Error al cargar la empresa');
-  }
+  const empresa = await Empresa.findById(req.params.id).lean();
+  res.render('editarEmpresa', { empresa });
 });
 
-// ─── GUARDAR CAMBIOS DE EMPRESA ─────────
 router.post('/empresas/:id', async (req, res) => {
-  try {
-    const { nombre } = req.body;
-
-    await Empresa.findByIdAndUpdate(req.params.id, { nombre });
-
-    res.redirect('/vinculaciones/empresas');
-  } catch (err) {
-    console.error('Error al actualizar empresa:', err);
-    res.status(500).send('Error al actualizar la empresa');
-  }
+  await Empresa.findByIdAndUpdate(req.params.id, {
+    nombre: req.body.nombre
+  });
+  res.redirect('/vinculaciones/empresas');
 });
 
-// ─── BORRAR EMPRESA COMPLETA ─────────
+
+// ─── BORRAR EMPRESA Y TODO ─────────
 router.post('/empresas/:id/borrar', async (req, res) => {
-  try {
-    const empresaId = req.params.id;
-
-    // borrar todas sus vinculaciones
-    await Vinculacion.deleteMany({ empresa: empresaId });
-
-    // borrar empresa
-    await Empresa.findByIdAndDelete(empresaId);
-
-    res.redirect('/vinculaciones/empresas');
-  } catch (err) {
-    console.error('Error al borrar empresa:', err);
-    res.status(500).send('Error al borrar la empresa');
-  }
+  await Vinculacion.deleteMany({ empresa: req.params.id });
+  await Empresa.findByIdAndDelete(req.params.id);
+  res.redirect('/vinculaciones/empresas');
 });
 
 
+router.get('/subir-pdf/:id', async (req, res) => {
+  const vinculacion = await Vinculacion.findById(req.params.id).lean();
 
-router.get('/editar/:id', async (req, res) => {
-  try {
-    const vinculacion = await Vinculacion.findById(req.params.id).lean();
-    const empresa = await Empresa.findById(vinculacion.empresa).lean();
-    const archivos = await FileMeta.find().lean();
-
-    if (!vinculacion) return res.status(404).send('Vinculación no encontrada');
-
-    res.render('editarVinculacion', {
-      vinculacion,
-      empresa,
-      archivos
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error al cargar la edición');
+  if (!vinculacion) {
+    return res.status(404).send('Contrato no encontrado');
   }
+
+  res.render('subirContrato', { vinculacion });
 });
 
-// ─── ELIMINAR EMPRESA Y TODAS SUS VINCULACIONES ─────────
-router.delete('/empresas/:id', async (req, res) => {
-  try {
-    const empresaId = req.params.id;
-
-    // 1️⃣ borrar vinculaciones de la empresa
-    await Vinculacion.deleteMany({ empresa: empresaId });
-
-    // 2️⃣ borrar la empresa
-    await Empresa.findByIdAndDelete(empresaId);
-
-    // 3️⃣ regresar al listado
-    res.redirect('/vinculaciones/empresas');
-  } catch (error) {
-    console.error('Error al borrar empresa:', error);
-    res.status(500).send('Error al borrar la empresa');
-  }
-});
 
 
 module.exports = router;

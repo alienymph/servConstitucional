@@ -7,6 +7,9 @@ const methodOverride = require('method-override');
 const { connectDB } = require('./config/db');
 const vinculacionesRouter = require('./routes/vinculaciones');
 const contratosRouter = require('./routes/contratos');
+const Vinculacion = require('./models/Vinculacion');
+
+
 
 // ─── Declarar app ─────────────────────────────
 const app = express();
@@ -16,7 +19,6 @@ const PORT = process.env.PORT || 3000;
 const FileMeta = require('./models/FileMeta');
 const filesRouter = require('./routes/files');
 const homeRoutes = require('./routes/home');
-const conveniosRouter = require('./routes/convenios'); // Si ya tienes convenios
 
 // ─── Middlewares ─────────────────────────────
 app.use(express.json());
@@ -24,7 +26,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use(express.static('public'));
-
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -64,7 +65,7 @@ async function start() {
   app.use('/', homeRoutes);
   app.use('/vinculaciones', vinculacionesRouter);
   app.use('/contratos', contratosRouter);
-  app.use('/', conveniosRouter);
+ 
 
   // ─── Otras rutas de ejemplo ───────────────
 
@@ -81,22 +82,38 @@ async function start() {
   );
 
   // Documentos próximos a vencer
-  app.get('/expiring', async (req, res) => {
-    try {
-      const today = new Date();
-      const limitDate = new Date();
-      limitDate.setDate(today.getDate() + 30);
+app.get('/expiring', async (req, res) => {
+  try {
+    const today = new Date();
+    const limitDate = new Date();
+    limitDate.setDate(today.getDate() + 30);
 
-      const files = await FileMeta.find({
-        vigenciaFin: { $gte: today, $lte: limitDate }
-      }).sort({ vigenciaFin: 1 }).lean();
+    const files = await Vinculacion.find({
+      vigenciaFin: { $gte: today, $lte: limitDate }
+    })
+    .sort({ vigenciaFin: 1 })
+    .populate('empresa')
+    .lean();
 
-      res.render('expiring', { title: 'Documentos por vencer', files });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Error al cargar documentos por vencer');
-    }
-  });
+    res.render('expiring', { 
+      title: 'Contratos por vencer',
+      files 
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al cargar contratos por vencer');
+  }
+});
+
+
+
+
+// 👇 agrega esto
+const filesRoutes = require('./routes/files');
+app.use(filesRoutes);
+
+
 
   // ─── 404 ──────────────────────────────────
   app.use((req, res) => {

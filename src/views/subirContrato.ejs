@@ -1,0 +1,49 @@
+<%- include('partials/header', { title: 'Subir PDF al Contrato' }) %>
+
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-body">
+
+      <h4 class="mb-4">
+        Subir PDF al contrato <%= vinculacion.folio %>
+      </h4>
+
+      <form action="/api/files/upload" 
+            method="POST" 
+            enctype="multipart/form-data">
+
+        <!-- 🔥 Campo oculto para asociar contrato -->
+        <input type="hidden" 
+               name="contratoId" 
+               value="<%= vinculacion._id %>">
+
+        <div class="mb-3">
+          <label>Archivo PDF</label>
+          <input type="file" 
+                 name="pdffile" 
+                 class="form-control" 
+                 accept="application/pdf"
+                 required>
+        </div>
+
+        <div class="mb-3">
+          <label>Titular</label>
+          <input type="text" 
+                 name="titular" 
+                 class="form-control" 
+                 required>
+        </div>
+
+        <!-- Puedes copiar los demás campos de upload.ejs -->
+
+        <button type="submit" class="btn btn-success">
+          Subir PDF
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

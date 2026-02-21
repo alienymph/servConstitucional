@@ -27,23 +27,6 @@
 </div>
 
 
-<a href="/upload" class="menu-item text-decoration-none">
-
-  <div class="menu-icon icon-green">
-    <i class="bi bi-plus-lg"></i>
-  </div>
-  Nuevo Convenio
-</a>
-
-
-  <a href="/manage" class="menu-item text-decoration-none">
-    <div class="menu-icon icon-blue">
-      <i class="bi bi-folder2-open"></i>
-    </div>
-    Gestionar Convenios
-  </a>
-
-
 
 </div>
 
@@ -114,14 +97,27 @@
           }
       %>
 
-        <div class="sidebar-card <%= clase %>">
-          <div class="card-header">
-            <span class="urgency-badge <%= badge %>"><%= texto %></span>
-            <span class="days-left"><%= dias %> días</span>
-          </div>
-          <div class="card-title"><%= c.titular %></div>
-          <div class="card-description"><%= c.unidadReceptora || "Convenio registrado" %></div>
-        </div>
+<a href="/contratos/ver/<%= c._id %>" 
+   class="text-decoration-none text-dark">
+
+  <div class="sidebar-card <%= clase %>">
+    
+    <div class="card-header">
+      <span class="urgency-badge <%= badge %>"><%= texto %></span>
+      <span class="days-left"><%= dias %> días</span>
+    </div>
+
+    <div class="card-title">
+      <%= c.titular || 'Sin titular' %>
+    </div>
+
+    <div class="card-description">
+      <%= c.empresa ? c.empresa.nombre : 'Empresa no definida' %>
+    </div>
+
+  </div>
+
+</a>
 
       <% }) %>
 

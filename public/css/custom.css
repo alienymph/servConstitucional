@@ -454,17 +454,19 @@ aside {
   gap: 16px;
 }
 
+
 .sidebar-card {
   background-color: #ffffff;
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease;  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .sidebar-card:hover {
-  transform: translateX(-5px);
+  transform: translateY(-2px);
   box-shadow: 5px 5px 20px rgba(91, 95, 255, 0.15);
 }
 

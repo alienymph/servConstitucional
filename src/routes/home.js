@@ -1,36 +1,41 @@
 const express = require('express');
 const router = express.Router();
-const FileMeta = require('../models/FileMeta');
+const Vinculacion = require('../models/Vinculacion');
 
-// HOME con estadísticas basadas en PDFs
 router.get('/', async (req, res) => {
   try {
     const hoy = new Date();
-    const files = await FileMeta.find().lean();
 
-    // Activos
-    const activos = files.filter(f =>
-      f.vigenciaFin && new Date(f.vigenciaFin) >= hoy
+    const contratos = await Vinculacion.find()
+      .populate('empresa')
+      .lean();
+
+    // 🟢 Activos
+    const activos = contratos.filter(c =>
+      c.vigenciaFin && new Date(c.vigenciaFin) >= hoy
     );
 
-    // Por vencer (30 días)
-    const porVencer = activos.filter(f => {
-      const dias = (new Date(f.vigenciaFin) - hoy) / (1000 * 60 * 60 * 24);
-      return dias <= 30;
+    // 🟡 Por vencer (30 días)
+    const porVencer = activos.filter(c => {
+      const dias = (new Date(c.vigenciaFin) - hoy) / (1000 * 60 * 60 * 24);
+      return dias <= 7;
     });
 
-    // Este mes (por fecha de inicio)
-    const esteMes = files.filter(f => {
-      if (!f.vigenciaInicio) return false;
-      const fecha = new Date(f.vigenciaInicio);
+    // 🔵 Este mes (por fecha de creación)
+    const esteMes = contratos.filter(c => {
+      const fecha = new Date(c.createdAt);
       return (
         fecha.getMonth() === hoy.getMonth() &&
         fecha.getFullYear() === hoy.getFullYear()
       );
     });
 
-    // Próximos a vencer (sidebar)
-    const proximos = porVencer
+    // 🚨 Próximos a vencer (sidebar 7 días)
+    const proximos = activos
+      .filter(c => {
+        const dias = (new Date(c.vigenciaFin) - hoy) / (1000 * 60 * 60 * 24);
+        return dias <= 7;
+      })
       .sort((a, b) =>
         new Date(a.vigenciaFin) - new Date(b.vigenciaFin)
       )

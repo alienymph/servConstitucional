@@ -22,12 +22,12 @@
 
       <!-- PDF -->
       <div class="mb-3">
-        <label for="pdfId" class="form-label">PDF</label>
-        <select name="pdfId" id="pdfId" class="form-select">
+        <label for="pdf" class="form-label">PDF</label>
+        <select name="pdf" id="pdf" class="form-select">
           <option value="">Seleccionar PDF</option>
           <% archivos.forEach(pdf => { %>
             <option value="<%= pdf._id %>"
-              <%= vinculacion.pdfId && vinculacion.pdfId.toString() === pdf._id.toString() ? 'selected' : '' %>>
+              <%= vinculacion.pdf && vinculacion.pdf.toString() === pdf._id.toString() ? 'selected' : '' %>>
               <%= pdf.filename %>
             </option>
           <% }) %>

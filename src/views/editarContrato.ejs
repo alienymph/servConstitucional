@@ -1,0 +1,129 @@
+<%- include('partials/header', { title: 'Editar Contrato' }) %>
+
+<div class="main-container">
+  <div class="content-area">
+    <main>
+
+      <h2 class="title-font mb-4">Editar Contrato</h2>
+
+      <form action="/contratos/editar/<%= contrato._id %>"
+            method="POST"
+            class="form-container">
+
+        <div class="form-group">
+          <label>Empresa / UR</label>
+          <input type="text"
+                 value="<%= contrato.empresa?.nombre || '—' %>"
+                 disabled>
+        </div>
+
+        <div class="form-group">
+          <label>Folio</label>
+          <input type="text"
+                 value="<%= contrato.folio %>"
+                 disabled>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo</label>
+          <input type="text"
+                 name="tipo"
+                 value="<%= contrato.tipo || '' %>"
+                 placeholder="Ej. Convenio, Acuerdo">
+        </div>
+<div class="form-group">
+  <label>Titular</label>
+  <input type="text" name="titular" value="<%= contrato.titular || '' %>">
+</div>
+
+<div class="form-group">
+  <label>Cargo</label>
+  <input type="text" name="cargo" value="<%= contrato.cargo || '' %>">
+</div>
+
+<div class="form-group">
+  <label>Correo</label>
+  <input type="email" name="correo" value="<%= contrato.correo || '' %>">
+</div>
+
+<div class="form-group">
+  <label>Apoderado Legal</label>
+  <input type="text" name="apoderadoLegal" value="<%= contrato.apoderadoLegal || '' %>">
+</div>
+
+<div class="form-group">
+  <label>Enlace Expediente</label>
+  <input type="text" name="enlaceExpediente" value="<%= contrato.enlaceExpediente || '' %>">
+</div>
+
+<div class="form-group">
+  <label>Año</label>
+  <input type="number" name="anio" value="<%= contrato.anio || '' %>">
+</div>
+
+<div class="form-group">
+  <label>Firma</label>
+  <input type="text" name="firma" value="<%= contrato.firma || '' %>">
+</div>
+
+<div class="form-group">
+  <label>Nacionalidad</label>
+  <input type="text" name="nacionalidad" value="<%= contrato.nacionalidad || '' %>">
+</div>
+
+<div class="form-group">
+  <label>Código</label>
+  <input type="text" name="codigo" value="<%= contrato.codigo || '' %>">
+</div>
+
+<div class="form-group">
+  <label>RFC</label>
+  <input type="text" name="rfc" value="<%= contrato.rfc || '' %>">
+</div>
+
+<div class="form-group">
+  <label>
+    <input type="checkbox" name="cuentaINE" value="true"
+      <%= contrato.cuentaINE ? 'checked' : '' %>>
+    Cuenta con INE
+  </label>
+</div>
+
+        <div class="form-group">
+          <label>Vigencia inicio</label>
+          <input type="date"
+                 name="vigenciaInicio"
+                 value="<%= contrato.vigenciaInicio ? contrato.vigenciaInicio.toISOString().slice(0,10) : '' %>">
+        </div>
+
+        <div class="form-group">
+          <label>Vigencia fin</label>
+          <input type="date"
+                 name="vigenciaFin"
+                 value="<%= contrato.vigenciaFin ? contrato.vigenciaFin.toISOString().slice(0,10) : '' %>">
+        </div>
+
+        <div class="form-group">
+          <label>Comentarios</label>
+          <textarea name="comentarios"
+                    placeholder="Observaciones..."><%= contrato.comentarios || '' %></textarea>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="see-all-btn">
+            Guardar cambios
+          </button>
+
+          <a href="/vinculaciones/empresa/<%= contrato.empresa._id %>"
+             class="btn btn-secondary">
+            Cancelar
+          </a>
+        </div>
+
+      </form>
+
+    </main>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

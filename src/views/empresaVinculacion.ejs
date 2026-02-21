@@ -7,39 +7,36 @@
   <p>Total de vínculos: <strong><%= vinculosCount %></strong></p>
 
   <!-- ACCIONES DE LA EMPRESA -->
-<div class="d-flex align-items-center gap-2 mb-4">
+  <div class="d-flex align-items-center gap-2 mb-4">
 
-  <a href="/vinculaciones/empresas/<%= empresa._id %>/editar"
-     class="btn btn-warning btn-sm d-flex align-items-center gap-1">
-    <i class="bi bi-pencil"></i>
-    Editar empresa
-  </a>
+    <a href="/vinculaciones/empresas/<%= empresa._id %>/editar"
+       class="btn btn-warning btn-sm d-flex align-items-center gap-1">
+      <i class="bi bi-pencil"></i>
+      Editar empresa
+    </a>
 
-<form id="formBorrarEmpresa"
-      action="/vinculaciones/empresas/<%= empresa._id %>?_method=DELETE"
-      method="POST"
-      data-total="<%= vinculosCount %>"
-      class="m-0">
+    <form id="formBorrarEmpresa"
+          action="/vinculaciones/empresas/<%= empresa._id %>?_method=DELETE"
+          method="POST"
+          data-total="<%= vinculosCount %>"
+          class="m-0">
 
-  <button type="submit"
-          class="btn btn-danger btn-sm d-flex align-items-center gap-1">
-    <i class="bi bi-trash"></i>
-    Borrar empresa
-  </button>
-</form>
+      <button type="submit"
+              class="btn btn-danger btn-sm d-flex align-items-center gap-1">
+        <i class="bi bi-trash"></i>
+        Borrar empresa
+      </button>
+    </form>
 
-
-</form>
-
-
-</div>
-
-
+  </div>
 
   <!-- NUEVO CONTRATO -->
-  <a href="/contratos/nuevo/<%= empresa._id %>" class="btn btn-primary mb-3">
-    Nuevo Contrato
-  </a>
+<a href="/contratos/nuevo/<%= empresa._id %>"
+   class="btn btn-primary mb-3">
+  <i class="bi bi-plus-circle"></i> Nuevo Contrato
+</a>
+
+
 
   <!-- TABLA DE VINCULACIONES -->
   <table class="table table-striped table-bordered">
@@ -54,56 +51,62 @@
       </tr>
     </thead>
 
-    <tbody>
-      <% if (vinculaciones.length === 0) { %>
-        <tr>
-          <td colspan="6" class="text-center">
-            No hay vinculaciones aún.
-          </td>
-        </tr>
-      <% } %>
+<tbody>
+  <% if (vinculaciones.length === 0) { %>
+    <tr>
+      <td colspan="6" class="text-center">No hay vinculaciones aún.</td>
+    </tr>
+  <% } %>
 
-      <% vinculaciones.forEach(v => { %>
-        <tr>
-          <td><%= v.folio %></td>
+  <% vinculaciones.forEach(v => { %>
+    <tr>
+      <td><%= v.folio %></td>
 
-          <td>
-            <% if (v.pdfId) { %>
-              <a href="/pdfs/<%= v.pdfId._id %>" target="_blank">
-                <%= v.pdfId.filename %>
-              </a>
-            <% } else { %>
-              Sin archivo
-            <% } %>
-          </td>
+      <td>
+<% if (v.pdf) { %>
+  <a href="/api/files/<%= v.pdf %>" target="_blank">
+    <i class="bi bi-file-earmark-pdf"></i> Ver PDF
+  </a>
+<% } else { %>
+  -
+<% } %>
 
-          <td><%= v.tipo %></td>
+      </td>
 
-          <td>
-            <%= v.vigencia ? v.vigencia.toISOString().slice(0,10) : '-' %>
-          </td>
+      <td><%= v.tipo || '-' %></td>
 
-          <td><%= v.comentarios || '-' %></td>
+      <td>
+        <%= v.vigenciaInicio ? new Date(v.vigenciaInicio).toLocaleDateString('es-MX') : '-' %> 
+        - 
+        <%= v.vigenciaFin ? new Date(v.vigenciaFin).toLocaleDateString('es-MX') : '-' %>
+      </td>
 
-          <!-- ACCIONES DE LA VINCULACIÓN -->
-          <td class="d-flex gap-2">
-            <a href="/vinculaciones/editar/<%= v._id %>"
-               class="btn btn-sm btn-warning">
-              Editar
-            </a>
+      <td><%= v.comentarios || '-' %></td>
 
-            <form action="/vinculaciones/eliminar/<%= v._id %>"
-                  method="POST"
-                  class="d-inline"
-                  onsubmit="return confirm('¿Eliminar esta vinculación?');">
-              <button type="submit" class="btn btn-sm btn-danger">
-                Eliminar
-              </button>
-            </form>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
+      <td class="d-flex gap-2">
+<a href="/contratos/ver/<%= v._id %>" class="btn btn-sm btn-info">
+  Ver
+</a>
+
+<a href="/contratos/editar/<%= v._id %>" class="btn btn-sm btn-warning">
+  Editar
+</a>
+
+
+        <form action="/vinculaciones/eliminar/<%= v._id %>" 
+              method="POST" 
+              onsubmit="return confirm('¿Eliminar esta vinculación?');">
+          <button type="submit" class="btn btn-sm btn-danger">
+            Eliminar
+          </button>
+        </form>
+
+      </td>
+
+    </tr>
+  <% }) %>
+</tbody>
+
   </table>
 
   <!-- VOLVER -->
@@ -115,10 +118,6 @@
 
 </div>
 
-
-
 <script src="/js/empresaVinculacion.js"></script>
-
-
 
 <%- include('partials/footer') %>
