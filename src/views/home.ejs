@@ -73,55 +73,57 @@
       <h2>Próximos a Vencer</h2>
     </div>
 
-    <div class="sidebar-items">
+  <div class="sidebar-items">
 
-      <% if (proximos.length === 0) { %>
-        <p style="color:#999;">No hay convenios próximos a vencer.</p>
-      <% } %>
+  <% if (proximos.length === 0) { %>
+    <p style="color:#999;">No hay convenios próximos a vencer.</p>
+  <% } %>
 
-      <% proximos.forEach(c => { 
-          const hoy = new Date();
-          const dias = Math.ceil((new Date(c.vigenciaFin) - hoy) / (1000*60*60*24));
-          let clase = "urgency-low";
-          let badge = "badge-on-time";
-          let texto = "En tiempo";
+  <% proximos.forEach(c => { 
+      const hoy = new Date();
+      const dias = Math.ceil((new Date(c.vigenciaFin) - hoy) / (1000*60*60*24));
 
-          if (dias <= 7) {
-            clase = "urgency-high";
-            badge = "badge-urgent";
-            texto = "Urgente";
-          } else if (dias <= 30) {
-            clase = "urgency-medium";
-            badge = "badge-soon";
-            texto = "Pronto";
-          }
-      %>
+      let clase, badge, texto;
 
-<a href="/contratos/ver/<%= c._id %>" 
-   class="text-decoration-none text-dark">
+      if (dias <= 7) {
+        clase = "urgency-high";
+        badge = "badge-urgent";
+        texto = "Urgente";
+      } else if (dias <= 30) { // 8 a 30 días = "Pronto"
+        clase = "urgency-medium";
+        badge = "badge-soon";
+        texto = "Pronto";
+      } else {
+        clase = "urgency-low"; // más de 30 días = "En tiempo"
+        badge = "badge-on-time";
+        texto = "En tiempo";
+      }
+  %>
 
-  <div class="sidebar-card <%= clase %>">
-    
-    <div class="card-header">
-      <span class="urgency-badge <%= badge %>"><%= texto %></span>
-      <span class="days-left"><%= dias %> días</span>
-    </div>
+  <a href="/contratos/ver/<%= c._id %>" class="text-decoration-none text-dark">
+    <div class="sidebar-card <%= clase %>">
+      
+      <div class="card-header">
+        <span class="urgency-badge <%= badge %>"><%= texto %></span>
+        <span class="days-left"><%= dias %> días</span>
+      </div>
 
-    <div class="card-title">
-      <%= c.titular || 'Sin titular' %>
-    </div>
+      <div class="card-title">
+        <%= c.titular || 'Sin titular' %>
+      </div>
 
-    <div class="card-description">
-      <%= c.empresa ? c.empresa.nombre : 'Empresa no definida' %>
-    </div>
-
-  </div>
-
-</a>
-
-      <% }) %>
+      <div class="card-description">
+        <%= c.empresa ? c.empresa.nombre : 'Empresa no definida' %>
+      </div>
 
     </div>
+  </a>
+
+  <% }) %>
+
+</div>
+
+
 
 <a href="/vinculaciones/empresas" class="see-all-btn text-decoration-none d-block text-center">
   Ver todos los convenios

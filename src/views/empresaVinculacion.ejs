@@ -15,20 +15,18 @@
       Editar empresa
     </a>
 
-    <form id="formBorrarEmpresa"
-          action="/vinculaciones/empresas/<%= empresa._id %>?_method=DELETE"
-          method="POST"
-          data-total="<%= vinculosCount %>"
-          class="m-0">
+<form id="formBorrarEmpresa"
+      action="/vinculaciones/empresas/<%= empresa._id %>/borrar"
+      method="POST"
+      data-total="<%= vinculosCount %>"
+      class="m-0">
 
-      <button type="submit"
-              class="btn btn-danger btn-sm d-flex align-items-center gap-1">
-        <i class="bi bi-trash"></i>
-        Borrar empresa
-      </button>
-    </form>
-
-  </div>
+  <button type="submit"
+          class="btn btn-danger btn-sm d-flex align-items-center gap-1">
+    <i class="bi bi-trash"></i>
+    Borrar empresa
+  </button>
+</form>
 
   <!-- NUEVO CONTRATO -->
 <a href="/contratos/nuevo/<%= empresa._id %>"
