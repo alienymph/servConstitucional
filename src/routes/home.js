@@ -30,16 +30,16 @@ router.get('/', async (req, res) => {
       );
     });
 
-    // 🚨 Próximos a vencer (sidebar 7 días)
-    const proximos = activos
-      .filter(c => {
-        const dias = (new Date(c.vigenciaFin) - hoy) / (1000 * 60 * 60 * 24);
-        return dias <= 7;
-      })
-      .sort((a, b) =>
-        new Date(a.vigenciaFin) - new Date(b.vigenciaFin)
-      )
-      .slice(0, 5);
+// 🚨 Próximos a vencer (sidebar 30 días)
+const proximos = activos
+  .filter(c => {
+    const dias = (new Date(c.vigenciaFin) - hoy) / (1000 * 60 * 60 * 24);
+    return dias <= 30; // 🔥 antes era 7
+  })
+  .sort((a, b) =>
+    new Date(a.vigenciaFin) - new Date(b.vigenciaFin)
+  )
+  .slice(0, 5);
 
     res.render('home', {
       totalActivos: activos.length,
