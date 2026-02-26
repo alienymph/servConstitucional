@@ -6,6 +6,41 @@
   <h2><%= empresa.nombre %> - Vinculaciones</h2>
   <p>Total de vínculos: <strong><%= vinculosCount %></strong></p>
 
+<!-- DATOS DE LA EMPRESA -->
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Datos de la Empresa / UR</h5>
+
+    <div class="row">
+      <div class="col-md-4">
+        <strong>Titular:</strong><br>
+        <%= empresa.titular || '-' %>
+      </div>
+
+      <div class="col-md-4">
+        <strong>Cargo:</strong><br>
+        <%= empresa.cargo || '-' %>
+      </div>
+
+      <div class="col-md-4">
+        <strong>Correo:</strong><br>
+        <%= empresa.correo || '-' %>
+      </div>
+
+      <div class="col-md-4 mt-3">
+        <strong>RFC:</strong><br>
+        <%= empresa.rfc || '-' %>
+      </div>
+
+      <div class="col-md-4 mt-3">
+        <strong>Nacionalidad:</strong><br>
+        <%= empresa.nacionalidad || '-' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
   <!-- ACCIONES DE LA EMPRESA -->
   <div class="d-flex align-items-center gap-2 mb-4">
 

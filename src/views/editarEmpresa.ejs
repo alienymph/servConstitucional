@@ -1,28 +1,109 @@
 <%- include('partials/header', { title: 'Editar empresa' }) %>
 
 <div class="container mt-4">
-  <h3>Editar empresa / UR</h3>
+  <div class="card shadow-sm p-4">
 
-  <form action="/vinculaciones/empresas/<%= empresa._id %>" method="POST">
-    <div class="mb-3">
-      <label class="form-label">Nombre de la empresa</label>
-      <input
-        type="text"
-        name="nombre"
-        class="form-control"
-        value="<%= empresa.nombre %>"
-        required
-      >
-    </div>
+    <h3 class="mb-4">Editar Empresa / UR</h3>
 
-    <button type="submit" class="btn btn-primary">
-      Guardar cambios
-    </button>
+    <form action="/vinculaciones/empresas/<%= empresa._id %>" method="POST">
 
-    <a href="/vinculaciones/empresas" class="btn btn-secondary">
-      Cancelar
-    </a>
-  </form>
+      <!-- Nombre -->
+      <div class="mb-3">
+        <label class="form-label">Nombre de la empresa</label>
+        <input
+          type="text"
+          name="nombre"
+          class="form-control"
+          value="<%= empresa.nombre %>"
+          required
+        >
+      </div>
+
+      <!-- Titular -->
+      <div class="mb-3">
+        <label class="form-label">Titular</label>
+        <input
+          type="text"
+          name="titular"
+          class="form-control"
+          value="<%= empresa.titular || '' %>"
+        >
+      </div>
+
+      <!-- Cargo -->
+      <div class="mb-3">
+        <label class="form-label">Cargo</label>
+        <input
+          type="text"
+          name="cargo"
+          class="form-control"
+          value="<%= empresa.cargo || '' %>"
+        >
+      </div>
+
+      <!-- Correo -->
+      <div class="mb-3">
+        <label class="form-label">Correo</label>
+        <input
+          type="email"
+          name="correo"
+          class="form-control"
+          value="<%= empresa.correo || '' %>"
+        >
+      </div>
+
+      <!-- RFC -->
+      <div class="mb-3">
+        <label class="form-label">RFC</label>
+        <input
+          type="text"
+          name="rfc"
+          class="form-control"
+          value="<%= empresa.rfc || '' %>"
+        >
+      </div>
+
+<div class="mb-3">
+  <label class="form-label d-block">Nacionalidad</label>
+
+  <div class="form-check form-check-inline">
+    <input 
+      class="form-check-input"
+      type="radio"
+      name="nacionalidad"
+      value="NACIONAL"
+      <%= empresa.nacionalidad === 'NACIONAL' ? 'checked' : '' %>
+      required
+    >
+    <label class="form-check-label">Nacional</label>
+  </div>
+
+  <div class="form-check form-check-inline">
+    <input 
+      class="form-check-input"
+      type="radio"
+      name="nacionalidad"
+      value="INTERNACIONAL"
+      <%= empresa.nacionalidad === 'INTERNACIONAL' ? 'checked' : '' %>
+    >
+    <label class="form-check-label">Internacional</label>
+  </div>
+</div>
+
+      <!-- Botones -->
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+          Guardar cambios
+        </button>
+
+        <a href="/vinculaciones/empresa/<%= empresa._id %>" 
+           class="btn btn-secondary">
+          Cancelar
+        </a>
+      </div>
+
+    </form>
+  </div>
 </div>
 
 <%- include('partials/footer') %>

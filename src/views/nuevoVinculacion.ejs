@@ -5,61 +5,102 @@
     <main>
       <h2 class="title-font">Nueva Vinculación</h2>
 
-      <form action="/vinculaciones/nuevo" method="POST" class="form-container">
+<form action="/vinculaciones/nuevo" method="POST" class="form-container form-card">
 
-        <div class="form-group">
-          <label>Nombre de empresa/UR:</label>
-          <input
-            type="text"
-            name="empresaNombre"
-            placeholder="Ej. Empresa XYZ"
-            required
-          >
-        </div>
+  <!-- ===== INFORMACIÓN GENERAL ===== -->
+  <div class="form-section">
+    <h3>INFORMACIÓN GENERAL</h3>
 
-        <!-- ❌ PDF ELIMINADO -->
+    <div class="form-grid-2">
+      <div class="form-group">
+        <label>Nombre de empresa / UR</label>
+        <input type="text" name="empresaNombre" placeholder="Ej. Empresa XYZ" required>
+      </div>
 
-        <div class="form-group">
-          <label>Tipo:</label>
-          <input
-            type="text"
-            name="tipo"
-            placeholder="Ej. Contrato, Acuerdo"
-          >
-        </div>
+      <div class="form-group">
+        <label>RFC</label>
+        <input type="text" name="rfc" placeholder="Ej. ABC123456789" maxlength="13">
+      </div>
+    </div>
 
-        <!-- ✅ VIGENCIA DIVIDIDA, MISMO ESTILO -->
-        <div class="form-group">
-          <label>Vigencia inicio:</label>
-          <input
-            type="date"
-            name="vigenciaInicio"
-            required
-          >
-        </div>
+    <div class="form-group">
+      <label>Tipo</label>
+      <input type="text" name="tipo" placeholder="Ej. Contrato, Acuerdo">
+    </div>
 
-        <div class="form-group">
-          <label>Vigencia fin:</label>
-          <input
-            type="date"
-            name="vigenciaFin"
-            required
-          >
-        </div>
+    <div class="form-group">
+      <label>Nacionalidad</label>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="nacionalidad" value="Nacional" required>
+          Nacional
+        </label>
+        <label>
+          <input type="radio" name="nacionalidad" value="Internacional">
+          Internacional
+        </label>
+      </div>
+    </div>
+  </div>
 
-        <div class="form-group">
-          <label>Comentarios:</label>
-          <textarea
-            name="comentarios"
-            placeholder="Agrega observaciones..."
-          ></textarea>
-        </div>
+  <!-- ===== RESPONSABLES ===== -->
+  <div class="form-section">
+    <h3>RESPONSABLES</h3>
 
-        <button type="submit" class="see-all-btn">
-          Agregar Vinculación
-        </button>
+    <div class="form-grid-2">
+      <div class="form-group">
+        <label>Titular</label>
+        <input type="text" name="titular" required>
+      </div>
 
-      </form>
+      <div class="form-group">
+        <label>Cargo del titular</label>
+        <input type="text" name="cargo">
+      </div>
+
+      <div class="form-group">
+        <label>Correo</label>
+        <input type="email" name="correo">
+      </div>
+
+      <div class="form-group">
+        <label>Apoderado legal</label>
+        <input type="text" name="apoderadoLegal">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VIGENCIA ===== -->
+  <div class="form-section">
+    <h3>VIGENCIA</h3>
+
+    <div class="form-grid-2">
+      <div class="form-group">
+        <label>Vigencia inicio</label>
+        <input type="date" name="vigenciaInicio" required>
+      </div>
+
+      <div class="form-group">
+        <label>Vigencia fin</label>
+        <input type="date" name="vigenciaFin" required>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== COMENTARIOS ===== -->
+  <div class="form-section">
+    <h3>COMENTARIOS</h3>
+
+    <div class="form-group">
+      <textarea name="comentarios" placeholder="Agrega observaciones..."></textarea>
+    </div>
+  </div>
+
+  <button type="submit" class="see-all-btn">
+    Agregar Vinculación
+  </button>
+
+</form>
     </main>
   </div>
 </div>

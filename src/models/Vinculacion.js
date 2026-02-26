@@ -37,17 +37,10 @@ const vinculacionSchema = new mongoose.Schema({
     default: Date.now
   },
 
-  // 🔹 METADATOS
-  titular: { type: String, trim: true },
-  cargo: { type: String, trim: true },
-  correo: { type: String, trim: true, lowercase: true },
-  apoderadoLegal: { type: String, trim: true },
-  enlaceExpediente: { type: String, trim: true },
-  anio: { type: Number },
-  firma: { type: String, trim: true },
-  nacionalidad: { type: String, trim: true },
-  codigo: { type: String, trim: true },
-  rfc: { type: String, trim: true, uppercase: true },
+// 🔹 METADATOS
+titular: { type: String, trim: true },
+cargo: { type: String, trim: true },
+correo: { type: String, trim: true, lowercase: true },
 
 cuentaINE: {
   type: Boolean,

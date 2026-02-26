@@ -19,9 +19,15 @@ router.post('/nuevo', async (req, res) => {
       tipo,
       vigenciaInicio,
       vigenciaFin,
-      comentarios
+      comentarios,
+      titular,
+      cargo,
+      correo,
+      apoderadoLegal,
+      nacionalidad,
+      rfc
     } = req.body;
-    // 🔥 CORRECCIÓN DE TIMEZONE
+
     const fechaInicio = vigenciaInicio
       ? new Date(vigenciaInicio + 'T12:00:00')
       : null;
@@ -31,8 +37,26 @@ router.post('/nuevo', async (req, res) => {
       : null;
 
     let empresa = await Empresa.findOne({ nombre: empresaNombre });
+
     if (!empresa) {
-      empresa = await Empresa.create({ nombre: empresaNombre });
+      empresa = await Empresa.create({
+        nombre: empresaNombre,
+        rfc,
+        titular,
+        cargo,
+        correo,
+        nacionalidad
+      });
+    } else {
+      await Empresa.findByIdAndUpdate(empresa._id, {
+        rfc,
+        titular,
+        cargo,
+        correo,
+        nacionalidad
+      });
+
+      empresa = await Empresa.findById(empresa._id);
     }
 
     const count = await Vinculacion.countDocuments({ empresa: empresa._id });
@@ -40,17 +64,21 @@ router.post('/nuevo', async (req, res) => {
     const anio = new Date().getFullYear();
     const folio = `${empresa.nombre.slice(0,3).toUpperCase()}-${anio}-${numero}`;
 
-await Vinculacion.create({
-  empresa: empresa._id,
-  folio,
-  tipo,
-  vigenciaInicio: fechaInicio,
-  vigenciaFin: fechaFin,
-  comentarios
-});
-
+    await Vinculacion.create({
+      empresa: empresa._id,
+      folio,
+      tipo,
+      vigenciaInicio: fechaInicio,
+      vigenciaFin: fechaFin,
+      comentarios,
+      titular,
+      cargo,
+      correo,
+      apoderadoLegal
+    });
 
     res.redirect(`/vinculaciones/empresa/${empresa._id}`);
+
   } catch (error) {
     console.error(error);
     res.status(500).send('Error al crear vinculación');
@@ -101,7 +129,24 @@ router.get('/empresas', async (req, res) => {
       }
     ]);
 
-    res.render('manageVinculacion', { empresas, search, sort: sortQuery });
+
+
+// 👉 Conteo por empresa
+const totalNacionales = await Empresa.countDocuments({
+  nacionalidad: 'NACIONAL'
+});
+
+const totalInternacionales = await Empresa.countDocuments({
+  nacionalidad: 'INTERNACIONAL'
+});
+
+res.render('manageVinculacion', {
+  empresas,
+  totalNacionales,
+  totalInternacionales,
+  search,
+  sort: sortQuery
+});
   } catch (error) {
     console.error(error);
     res.status(500).send('Error al cargar empresas');
@@ -243,10 +288,37 @@ router.get('/empresas/:id/editar', async (req, res) => {
 });
 
 router.post('/empresas/:id', async (req, res) => {
-  await Empresa.findByIdAndUpdate(req.params.id, {
-    nombre: req.body.nombre
-  });
-  res.redirect('/vinculaciones/empresas');
+  try {
+    const { nombre, titular, cargo, correo, rfc, nacionalidad } = req.body;
+
+    // 1️⃣ Actualizar empresa
+    await Empresa.findByIdAndUpdate(req.params.id, {
+      nombre,
+      titular,
+      cargo,
+      correo,
+      rfc,
+      nacionalidad
+    });
+
+    // 2️⃣ Actualizar TODAS las vinculaciones de esa empresa
+    await Vinculacion.updateMany(
+      { empresa: req.params.id },
+      {
+        titular,
+        cargo,
+        correo,
+        rfc,
+        nacionalidad
+      }
+    );
+
+    res.redirect(`/vinculaciones/empresa/${req.params.id}`);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al actualizar empresa');
+  }
 });
 
 

@@ -31,6 +31,17 @@
     </div>
   </form>
 
+<div class="mb-3">
+  <span class="badge bg-success">
+    Nacionales: <%= totalNacionales %>
+  </span>
+
+  <span class="badge bg-primary">
+    Internacionales: <%= totalInternacionales %>
+  </span>
+</div>
+
+
   <!-- TABLA DE EMPRESAS -->
   <div class="table-responsive shadow-sm rounded">
     <table class="table table-hover align-middle mb-0">
@@ -74,14 +85,8 @@
 
 </div>
 
-<script>
-  const sortSelect = document.querySelector('select[name="sort"]');
-  if(sortSelect){
-    sortSelect.addEventListener('change', () => {
-      sortSelect.form.submit();
-    });
-  }
-</script>
+
+
 
 <style>
   /* Hover suave y transición */
@@ -102,5 +107,8 @@
     padding: 0.25rem 0.5rem;
   }
 </style>
+
+<script src="/js/manageVinculacion.js"></script>
+
 
 <%- include('partials/footer') %>
