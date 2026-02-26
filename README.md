@@ -20,8 +20,8 @@ Sigue estos pasos para ejecutar el proyecto localmente en Windows:
 
 ### 1️⃣ Clonar el repositorio
 ```bash
-git clone https://github.com/tu_usuario/tu_repositorio.git
-cd tu_repositorio
+git clone https://github.com/alienymph/servConstitucional.git
+cd servConstitucional
 ````
 
 ### 2️⃣ Instalar dependencias
@@ -113,9 +113,9 @@ uploads/          # Archivos subidos (no subir al repo)
 INSTALACION DEL PROYECTO 
 
 1️⃣ Clonar el repositorio:
-git clone https://github.com/tu_usuario/tu_repositorio.git
+git clone https://github.com/alienymph/servConstitucional.git
 
-cd tu_repositorio
+cd servConstitucional
 
 2️⃣ Instalar dependencias:
 npm install
