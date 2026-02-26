@@ -122,10 +122,12 @@ header {
   display: flex;
   align-items: center;
   gap: 14px;
+  height: 52px; /* mismo alto que el avatar */
 }
 
-.header-user-info {
-  text-align: right;
+.header-user-info p {
+  margin: 0;
+  line-height: 1;
 }
 
 .user-avatar {
@@ -476,3 +478,4 @@ footer {
   .main-container { padding: 12px; }
   .see-all-btn { font-size: 14px; padding: 10px 12px; }
 }
+
